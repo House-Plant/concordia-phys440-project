@@ -89,12 +89,20 @@ The actual default branch is `main` (`origin/HEAD` was inspected).
   Tasks and VS Code notebook kernels start at the root; use `data/` and `results/`
   paths. Other notebook launchers may choose a different working directory.
 - Standalone scientific runs belong in `scripts/`; informal manual investigations
-  belong in `scripts/experiments/`. Neither needs `__init__.py`. Run a script with
+  belong in `scripts/testing/`. Neither needs `__init__.py`. Run a script with
   VS Code's **Run Python File in Terminal** using `.venv`, or from the repository
   root with `uv run --locked python scripts/PATH.py`. Scripts can import `tools`.
   Ruff covers these files, while the default pytest suite does not execute them.
   Keep slow simulations and visual investigations here; move reusable functions
   into `src/tools/` and fast automated correctness checks into `tests/`.
+- Personal workspaces use `scripts/personal/<name>/`, with folders for Colin,
+  Naomi, Sabrina, Jaeden, and Eshaal. When onboarding someone else, copy an
+  existing folder's empty structure. Personal `testing/` and `data/` files can be
+  committed and shared. `.gitignore` excludes every person's `figures/` and
+  `outputs/` contents, except `.gitkeep` files.
+  These local files are not backed up by Git. Personal folders are a team convention;
+  contributors coordinate before editing another person's work. Keep these rules
+  aligned with the [personal-folder instructions](../../scripts/personal/README.md).
 - Repository automation and **all its tests** live in `maintenance/` and `maintenance/tests/`.
   Reserve `tests/` for scientific tests; keep scientific reports in `reports/`
   and repository guides in `docs/`. The implementation brief is kept in

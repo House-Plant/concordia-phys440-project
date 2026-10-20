@@ -81,21 +81,26 @@ by setup. Ask the maintainer for help if you are unsure which email to use.
 ## 5. Run standalone scripts
 
 Put scripts for simulations, data analysis, and generating figures in `scripts/`.
-Use `scripts/experiments/` for informal investigations that you run and inspect
+Use `scripts/testing/` for informal investigations that you run and inspect
 yourself. Open a script, select this project's `.venv`, then choose **Run Python
 File in Terminal**. Keep the terminal at the repository root so paths such as
 `data/raw/...` and `results/...` work. For example, you can run the existing
-`scripts/experiments/linting-test-1.py` this way.
+`scripts/personal/colin/linting-test-1.py` this way.
+
+For your own space, use your named folder under `scripts/personal/`.
+Its `testing/` and `data/` folders hold scripts and datasets you can commit and
+share; `figures/` and `outputs/` hold local files ignored by Git. Follow the
+[personal-folder instructions](../../scripts/personal/README.md).
 
 These directories need no `__init__.py`. Scripts can import reusable tools from
 `src/tools/`, such as `from tools import analysis` after creating
 `src/tools/analysis.py`. Automated scientific checks with pass/fail assertions
-belong in `tests/`; see the [repository map](../README.md#where-to-work).
+belong in `tests/`; see the [repository map](../../README.md#where-to-work).
 
 ## 6. If you use notebooks
 
 Put notebooks in `notebooks/`. Scientific Python modules belong in `src/tools/`;
-see the [repository map](../README.md#where-to-work). Setup installs the dependencies
+see the [repository map](../../README.md#where-to-work). Setup installs the dependencies
 already declared in `pyproject.toml`, including NumPy.
 Before the first notebook, run **Project: Add Python package**, enter `ipykernel`,
 and include the resulting dependency files in your PR. If already declared, it

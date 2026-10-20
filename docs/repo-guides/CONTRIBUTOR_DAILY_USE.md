@@ -3,10 +3,18 @@
 Once per clone: follow [setup](CONTRIBUTOR_SETUP.md). Use VS Code with this
 repository open. Save → Stage → Commit → Push → Open PR is the normal cycle.
 Put reusable scientific code in `src/tools/`, standalone analysis/simulation
-scripts in `scripts/`, and informal investigations in `scripts/experiments/`.
+scripts in `scripts/`, and informal investigations in `scripts/testing/`.
 Use `notebooks/` for interactive exploration, `data/` for inputs, `tests/` for
 automated scientific checks, and `reports/` for your write-up. Repository automation
-lives in `maintenance/`; see the [directory map](../README.md#where-to-work).
+lives in `maintenance/`; see the [directory map](../../README.md#where-to-work).
+
+For a personal workspace, use your named folder under `scripts/personal/`.
+Put scripts in its `testing/` folder and datasets in its `data/` folder. Stage,
+commit, and push these files to save and share them through Git. Put plots and
+other generated files in `figures/` and `outputs/`; their contents are ignored.
+Coordinate before editing someone else's folder. See the
+[personal-folder instructions](../../scripts/personal/README.md) for running scripts
+and choosing output paths. Continue using the normal task-branch workflow below.
 
 1. **Start work.** First commit and push your current task's work on its own
    branch, or otherwise safely save it. Check Source Control for uncommitted files;
@@ -17,7 +25,7 @@ lives in `maintenance/`; see the [directory map](../README.md#where-to-work).
    task. Do not commit directly to `main`.
 3. **Work.** Edit and **Save** Python files; Ruff formats and organizes imports.
    Select `.venv` first. Open a standalone script from `scripts/` or
-   `scripts/experiments/` and use the Python extension's **Run Python File in
+   `scripts/testing/` and use the Python extension's **Run Python File in
    Terminal** button, with the terminal at the repository root. These scripts need
    no `__init__.py` and can import shared code from `tools`. For runnable package
    modules, use
