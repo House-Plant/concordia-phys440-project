@@ -2,9 +2,11 @@
 
 Once per clone: follow [setup](CONTRIBUTOR_SETUP.md). Use VS Code with this
 repository open. Save → Stage → Commit → Push → Open PR is the normal cycle.
-Put code in `src/modelling/`, notebooks in `notebooks/`, inputs in `data/`, scientific
-tests in `tests/`, and your write-up in `reports/`. Repository automation lives in
-`tools/`; see the [directory map](../README.md#where-to-work).
+Put reusable scientific code in `src/tools/`, standalone analysis/simulation
+scripts in `scripts/`, and informal investigations in `scripts/experiments/`.
+Use `notebooks/` for interactive exploration, `data/` for inputs, `tests/` for
+automated scientific checks, and `reports/` for your write-up. Repository automation
+lives in `maintenance/`; see the [directory map](../README.md#where-to-work).
 
 1. **Start work.** First commit and push your current task's work on its own
    branch, or otherwise safely save it. Check Source Control for uncommitted files;
@@ -14,11 +16,14 @@ tests in `tests/`, and your write-up in `reports/`. Repository automation lives 
    `feat/baseline-model` or `fix/missing-values`. Keep one short-lived branch per
    task. Do not commit directly to `main`.
 3. **Work.** Edit and **Save** Python files; Ruff formats and organizes imports.
-   Select `.venv` first. Run standalone scripts with the Python extension's
-   **Run Python File in Terminal** button; for runnable package modules, use
+   Select `.venv` first. Open a standalone script from `scripts/` or
+   `scripts/experiments/` and use the Python extension's **Run Python File in
+   Terminal** button, with the terminal at the repository root. These scripts need
+   no `__init__.py` and can import shared code from `tools`. For runnable package
+   modules, use
    **Terminal → Run Task → Project: Run Python module** and enter the module's
-   name, such as `modelling.simulation`. For notebooks in `notebooks/`,
-   select `.venv` under **Select Kernel** and import reusable code from `modelling`,
+   name, such as `tools.simulation`. For notebooks in `notebooks/`,
+   select `.venv` under **Select Kernel** and import reusable code from `tools`,
    then run cells; notebook formatting on save is not enabled. Run **Terminal →
    Run Task → Project: Run checks** before uploading.
    An `import` statement uses a package; it does not install one. Already-declared

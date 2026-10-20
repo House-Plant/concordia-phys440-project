@@ -23,9 +23,10 @@ The actual default branch is `main` (`origin/HEAD` was inspected).
 ## What runs automatically
 
 - **[x] Environment:** `uv.lock` locks runtime and dev packages; `.venv` is ignored.
-  `src/modelling/` is the scientific package, installed editably during sync with
+  `src/tools/` is the scientific package, installed editably during sync with
   the pinned lightweight `uv_build` backend. Only scientific code is packaged;
-  `tools/`, repository guides, and workflow tests stay outside the package.
+  standalone `scripts/`, `maintenance/`, repository guides, and workflow tests stay
+  outside the package.
   Setup runs `uv sync --locked` and installs repository-local pre-commit,
   post-checkout, and post-merge hooks. It is safe to repeat. It refuses an existing
   custom `core.hooksPath` instead of changing that setting. Resolve any hook conflict
@@ -81,19 +82,26 @@ The actual default branch is `main` (`origin/HEAD` was inspected).
   for simultaneous changes to the same files. Never force-push shared history.
 - New runtime library: use **Project: Add Python package**. The import name may
   differ from its distribution name. Reusable scientific modules belong in
-  `src/modelling/` and are imported as `modelling`. The editable install is automatic
+  `src/tools/` and are imported as `tools`. The editable install is automatic
   through `uv sync --locked`; no contributor `pip install` step is required. Run
-  a runnable module with **Project: Run Python module**, entering `modelling.MODULE`,
-  or from the root with `uv run --locked python -m modelling.MODULE`.
+  a runnable module with **Project: Run Python module**, entering `tools.MODULE`,
+  or from the root with `uv run --locked python -m tools.MODULE`.
   Tasks and VS Code notebook kernels start at the root; use `data/` and `results/`
   paths. Other notebook launchers may choose a different working directory.
-- Repository automation and **all its tests** live in `tools/` and `tools/tests/`.
+- Standalone scientific runs belong in `scripts/`; informal manual investigations
+  belong in `scripts/experiments/`. Neither needs `__init__.py`. Run a script with
+  VS Code's **Run Python File in Terminal** using `.venv`, or from the repository
+  root with `uv run --locked python scripts/PATH.py`. Scripts can import `tools`.
+  Ruff covers these files, while the default pytest suite does not execute them.
+  Keep slow simulations and visual investigations here; move reusable functions
+  into `src/tools/` and fast automated correctness checks into `tests/`.
+- Repository automation and **all its tests** live in `maintenance/` and `maintenance/tests/`.
   Reserve `tests/` for scientific tests; keep scientific reports in `reports/`
   and repository guides in `docs/`. The implementation brief is kept in
   `docs/maintenance/`; use the contributor guides for current paths and commands.
-  Pytest discovers `tests/` and `tools/tests/` separately with importlib mode.
+  Pytest discovers `tests/` and `maintenance/tests/` separately with importlib mode.
   Once scientific tests exist, run only those with `uv run --locked pytest tests`;
-  run infrastructure tests with `uv run --locked pytest tools/tests`.
+  run infrastructure tests with `uv run --locked pytest maintenance/tests`.
 - First notebooks: add `ipykernel` with that task, then select `.venv`. NumPy,
   SciPy, plotting libraries and model frameworks are intentionally not guessed.
   The contributor guide covers running scripts and notebooks.

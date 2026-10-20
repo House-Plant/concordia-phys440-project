@@ -32,7 +32,7 @@
   - **Project: Add Python package** — prompts for one package/distribution name and runs `uv add <name>` as an argument list (**process task, not shell string interpolation**). It must update `pyproject.toml`, `uv.lock`, and `.venv` together.
   - **Project: Sync Python environment** — runs `uv sync --locked` for recovery.
   - Optional only if useful: **Project: Run checks** — invokes the same fast local checks as CI.
-- The bootstrap script belongs under `tools/` and must run on Windows, macOS, and Linux without Bash/PowerShell-specific assumptions. It should detect missing tools with clear installation guidance, operate from the repo root, be safe to run repeatedly, and avoid changing global settings. A contributor should not have to type a sequence of terminal commands.
+- The bootstrap script belongs under `maintenance/` and must run on Windows, macOS, and Linux without Bash/PowerShell-specific assumptions. It should detect missing tools with clear installation guidance, operate from the repo root, be safe to run repeatedly, and avoid changing global settings. A contributor should not have to type a sequence of terminal commands.
 - Document the difference between **an import statement** and **installing a new external package**. Existing project dependencies work immediately; new dependencies require the *Add Python package* task. `import sklearn` may correspond to a differently named distribution (`scikit-learn`), so **never auto-install arbitrary missing imports**. Project-local imports should resolve from the configured project environment.
 
 ## 4. Commit and environment synchronization behavior
