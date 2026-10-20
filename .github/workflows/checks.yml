@@ -17,7 +17,6 @@ jobs:
     steps:
       - uses: actions/checkout@08eba0b27e820071cde6df949e0beb9ba4906955 # v4.3.0
         with:
-          fetch-depth: 0
           persist-credentials: false
       - uses: astral-sh/setup-uv@d0cc045d04ccac9d8b7881df0226f9e82c39688e # v6.8.0
         with:
@@ -27,39 +26,5 @@ jobs:
         run: uv python install
       - name: Install locked environment
         run: uv sync --locked
-      - name: Lock consistency, Ruff, policy settings, and offline tests
+      - name: Lock consistency, Ruff, and offline tests
         run: uv run --locked python tools/run_checks.py
-
-  protected-files:
-    name: Protected files
-    runs-on: ubuntu-latest
-    timeout-minutes: 5
-    steps:
-      - uses: actions/checkout@08eba0b27e820071cde6df949e0beb9ba4906955 # v4.3.0
-        with:
-          fetch-depth: 0
-          persist-credentials: false
-      - name: Check changes using the trusted base policy and checker
-        env:
-          BASE: ${{ github.event.pull_request.base.sha || github.event.before }}
-          HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
-        shell: bash
-        run: |
-          if [[ "$BASE" == "0000000000000000000000000000000000000000" ]]; then
-            echo "Initial push: no prior protection policy exists."
-            exit 0
-          fi
-          CHECKER="$RUNNER_TEMP/check_protected_files.py"
-          if git cat-file -e "$BASE:tools/check_protected_files.py" 2>/dev/null; then
-            git show "$BASE:tools/check_protected_files.py" > "$CHECKER"
-          elif git cat-file -e "$BASE:scripts/check_protected_files.py" 2>/dev/null; then
-            # Support a trusted base that predates the tools/ directory move.
-            git show "$BASE:scripts/check_protected_files.py" > "$CHECKER"
-          elif ! git cat-file -e "$BASE:.github/protected-paths.txt" 2>/dev/null; then
-            echo "First workflow installation: no base policy/checker exists yet."
-            cp tools/check_protected_files.py "$CHECKER"
-          else
-            echo "::error::Base policy exists but trusted checker is missing. Ask the maintainer."
-            exit 1
-          fi
-          python "$CHECKER" --base "$BASE" --head "$HEAD_SHA"

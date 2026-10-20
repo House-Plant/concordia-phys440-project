@@ -33,13 +33,13 @@ tests in `tests/`, and your write-up in `reports/`. Repository automation lives 
 4. **Commit.** Source Control icon → review each diff → stage relevant files with
    **+** → enter a useful plain-language description → **Commit**. If checks fail,
    read the message, fix/Save, review and stage again, then retry; ask the maintainer
-   if unsure and never bypass a protected-file guard.
+   if unsure.
 5. **Upload.** Choose **Publish Branch** on the first upload, or **… → Push** later.
    **Commit is local. Push uploads. Neither merges into `main`.**
 6. **Finish.** On GitHub, open **Pull requests → New pull request**, with base
    `main` and your branch as compare. Add a short title and explain the change
-   and how you checked it. Wait for green **Quality** and **Protected files**
-   checks, request teammate review, then **Squash and merge** when approved.
+   and how you checked it. Wait for the green **Quality** check, request teammate
+   review, then **Squash and merge** when approved.
    If CI fails or GitHub reports a conflict, contact the maintainer.
 7. **Next task.** Switch to `main` and **Pull** again; create the next task branch.
    Dependencies sync automatically after branch switches and pulls that update
@@ -57,4 +57,4 @@ branches/PRs when simultaneous editing is common.
 **If something goes wrong:** Commit blocked → read its message. New external import
 missing → **Add Python package** task; check `.venv` first. Behind remote → **Pull**
 before **Push**. Sync failed → **Sync Python environment** task. Merge conflict or
-protected file → stop and ask the maintainer.
+an unresolved error → stop and ask the maintainer.

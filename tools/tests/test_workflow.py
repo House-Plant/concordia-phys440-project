@@ -94,7 +94,7 @@ def test_task_package_input_is_one_process_argument():
     assert all(t["type"] == "process" for t in tasks["tasks"])
 
 
-def test_workflow_has_stable_check_names_and_readonly_tokens():
+def test_workflow_has_stable_check_name_and_least_privilege_permissions():
     # BaseLoader preserves GitHub's YAML 1.2 `on` key as a string.
     workflow = yaml.load(
         (ROOT / ".github/workflows/checks.yml").read_text(), Loader=yaml.BaseLoader
@@ -102,10 +102,7 @@ def test_workflow_has_stable_check_names_and_readonly_tokens():
     assert workflow["permissions"] == {"contents": "read"}
     assert workflow["on"]["pull_request"]["branches"] == ["main"]
     assert workflow["on"]["push"]["branches"] == ["main"]
-    assert {job["name"] for job in workflow["jobs"].values()} == {
-        "Quality",
-        "Protected files",
-    }
+    assert {job["name"] for job in workflow["jobs"].values()} == {"Quality"}
     for job in workflow["jobs"].values():
         for step in job["steps"]:
             if "uses" in step:

@@ -42,15 +42,11 @@ on storage and ignore rules before adding it to Git.
 
 - [First-time contributor setup](docs/CONTRIBUTOR_SETUP.md)
 - [Daily use: editing, notebooks, packages, branches, and PRs](docs/CONTRIBUTOR_DAILY_USE.md)
-- [Maintainer setup, GitHub protections, and upkeep](docs/MAINTAINER_SETUP.md)
+- [Maintainer setup and upkeep](docs/MAINTAINER_SETUP.md)
 
 Start in VS Code with **Terminal → Run Task → Project: First-time setup**.
 Then use **Save → Stage → Commit → Push → Open PR** on a task branch.
 
-GitHub rules and code owners still need maintainer configuration. No actual
-immutable paths have been identified; file protection is not active until the
-maintainer fills in the policy. See the maintainer checklist before onboarding a team.
-
-The original implementation brief is archived under
+The workflow implementation brief is kept under
 [docs/maintenance/](docs/maintenance/CODEX_REPO_WORKFLOW_SETUP.md).
-It records the original request; use the current guides for paths and commands.
+Use the contributor and maintainer guides for current paths and commands.

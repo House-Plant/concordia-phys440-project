@@ -46,8 +46,7 @@ The first setup needs an internet connection.
    `.venv\Scripts\python.exe` on Windows, `.venv/bin/python` on macOS/Linux.
 4. Choose **Terminal → Run Task → Project: Run checks**. Success ends with
    **All project checks passed.** This verifies Python, tool imports, formatting,
-   and the fast tests. A message saying no immutable paths are configured means
-   the maintainer has not yet selected files to protect; setup can still succeed.
+   and the fast tests.
 5. Confirm editor setup once: create a temporary `.py` file containing `x=1`,
    then **Save**. It should become `x = 1`. Remove this temporary file afterward.
    If it stays unchanged, check that Ruff is enabled and this workspace is trusted.

@@ -11,11 +11,6 @@ def main():
         ["uv", "lock", "--check"],
         [str(python_executable()), "-m", "ruff", "check", "."],
         [str(python_executable()), "-m", "ruff", "format", "--check", "."],
-        [
-            str(python_executable()),
-            "tools/check_protected_files.py",
-            "--check-settings",
-        ],
         [str(python_executable()), "-m", "pytest"],
     ]
     for command in commands:

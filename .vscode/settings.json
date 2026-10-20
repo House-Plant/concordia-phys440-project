@@ -12,6 +12,5 @@
     "editor.codeActionsOnSave": {
       "source.organizeImports.ruff": "explicit"
     }
-  },
-  "files.readonlyInclude": {}
+  }
 }
