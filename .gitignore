@@ -218,3 +218,10 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# Project-local secrets and generated output (keep research data/notebooks tracked)
+.env.*
+!.env.example
+/results/*
+!/results/.gitkeep
+.DS_Store

@@ -1,0 +1,57 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Project: First-time setup",
+      "type": "process",
+      "command": "uv",
+      "args": ["run", "--no-project", "--python", "3.12", "tools/bootstrap.py"],
+      "problemMatcher": []
+    },
+    {
+      "label": "Project: Add Python package",
+      "type": "process",
+      "command": "uv",
+      "args": ["add", "--", "${input:packageName}"],
+      "problemMatcher": []
+    },
+    {
+      "label": "Project: Sync Python environment",
+      "type": "process",
+      "command": "uv",
+      "args": ["sync", "--locked"],
+      "problemMatcher": []
+    },
+    {
+      "label": "Project: Run Python module",
+      "type": "process",
+      "command": "uv",
+      "args": ["run", "--locked", "python", "-m", "${input:moduleName}"],
+      "problemMatcher": []
+    },
+    {
+      "label": "Project: Run checks",
+      "type": "process",
+      "command": "uv",
+      "args": ["run", "--locked", "python", "tools/run_checks.py"],
+      "group": "test",
+      "problemMatcher": []
+    }
+  ],
+  "options": {
+    "cwd": "${workspaceFolder}",
+    "env": {"UV_PROJECT_ENVIRONMENT": "${workspaceFolder}/.venv"}
+  },
+  "inputs": [
+    {
+      "id": "moduleName",
+      "type": "promptString",
+      "description": "Module to run, e.g. phys440.simulation after creating src/phys440/simulation.py"
+    },
+    {
+      "id": "packageName",
+      "type": "promptString",
+      "description": "One distribution name, e.g. numpy or scikit-learn (not an import statement)"
+    }
+  ]
+}

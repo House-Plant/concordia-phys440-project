@@ -1,0 +1,28 @@
+[build-system]
+requires = ["uv_build==0.11.19"]
+build-backend = "uv_build"
+
+[project]
+name = "concordia-phys440-project"
+version = "0.1.0"
+description = "Concordia PHYS 440 modelling project"
+requires-python = ">=3.12,<3.13"
+dependencies = []
+
+[dependency-groups]
+dev = ["pre-commit>=4,<5", "pytest>=8,<10", "pyyaml>=6,<7", "ruff>=0.11,<1"]
+
+[tool.uv.build-backend]
+module-name = "phys440"
+
+[tool.ruff]
+target-version = "py312"
+line-length = 88
+extend-exclude = ["results"]
+
+[tool.ruff.lint]
+select = ["E4", "E7", "E9", "F", "I"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests", "tools/tests"]
+addopts = "-ra --import-mode=importlib"

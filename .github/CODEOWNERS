@@ -1,0 +1,11 @@
+# Primary maintainer owns repository machinery, setup guides, and licensing.
+# Require code-owner reviews in GitHub branch rules to enforce approval.
+
+/.github/ @house-plant
+/tools/ @house-plant
+/.vscode/ @house-plant
+/.pre-commit-config.yaml @house-plant
+/.python-version @house-plant
+/.gitignore @house-plant
+/docs/ @house-plant
+/LICENSE @house-plant

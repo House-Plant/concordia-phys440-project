@@ -1,0 +1,103 @@
+# First-time contributor setup
+
+Allow 5–10 minutes to read this guide, plus download time. Repeat it on each
+computer or new clone. Project settings, hooks, and packages stay local to this
+repository. Installing standard applications and editor extensions is the exception.
+
+## 1. Install the applications for your system
+
+| System | Git | VS Code | uv |
+| --- | --- | --- | --- |
+| Windows | [Git for Windows](https://git-scm.com/downloads/win) | [Windows setup](https://code.visualstudio.com/docs/setup/windows) | [uv installer: Windows PowerShell instructions](https://docs.astral.sh/uv/getting-started/installation/#standalone-installer) |
+| macOS | [Git for macOS](https://git-scm.com/downloads/mac) | [macOS setup](https://code.visualstudio.com/docs/setup/mac) | [uv installer: macOS instructions](https://docs.astral.sh/uv/getting-started/installation/#standalone-installer) |
+| Linux | [Git for Linux](https://git-scm.com/downloads/linux) | [Linux setup](https://code.visualstudio.com/docs/setup/linux) | [uv installer: Linux instructions](https://docs.astral.sh/uv/getting-started/installation/#standalone-installer) |
+
+Follow your system's installation instructions. Use uv 0.11.19 or newer. Close
+and reopen VS Code after installation so it can find Git and uv. You do not need
+to install Python packages globally; uv finds or downloads Python 3.12 for you.
+The first setup needs an internet connection.
+
+## 2. Clone and open this repository
+
+1. Sign in to your GitHub account in your browser. Ask the maintainer for access
+   if this is a private repository.
+2. Open VS Code. Open the Command Palette with **Ctrl+Shift+P** (Windows/Linux)
+   or **Cmd+Shift+P** (macOS). Choose **Git: Clone** (or **Clone Repository** in
+   Source Control).
+3. Paste `https://github.com/House-Plant/concordia-phys440-project.git`.
+   Pick a local parent folder. Complete GitHub sign-in when requested.
+4. Choose **Open** when cloning finishes. Open the folder that contains
+   `pyproject.toml` and `.vscode`, not its parent. Trust the workspace after
+   confirming that it is this repository. If several repositories appear in
+   Source Control, select **concordia-phys440-project** before any Git action.
+5. Open **Extensions**. Install the workspace recommendations: **Python**
+   (`ms-python.python`), **Ruff** (`charliermarsh.ruff`), and **Jupyter**
+   (`ms-toolsai.jupyter`). Jupyter is only needed when using notebooks.
+
+## 3. Run the one-time setup task
+
+1. Choose **Terminal → Run Task → Project: First-time setup**.
+2. Wait for this exact message:
+
+   > Setup complete: .venv ready; commit and branch/pull hooks installed.
+
+3. Open the Command Palette → **Python: Select Interpreter**. Choose the Python
+   inside this folder's `.venv`. If it is missing, use **Enter interpreter path**:
+   `.venv\Scripts\python.exe` on Windows, `.venv/bin/python` on macOS/Linux.
+4. Choose **Terminal → Run Task → Project: Run checks**. Success ends with
+   **All project checks passed.** This verifies Python, tool imports, formatting,
+   and the fast tests. A message saying no immutable paths are configured means
+   the maintainer has not yet selected files to protect; setup can still succeed.
+5. Confirm editor setup once: create a temporary `.py` file containing `x=1`,
+   then **Save**. It should become `x = 1`. Remove this temporary file afterward.
+   If it stays unchanged, check that Ruff is enabled and this workspace is trusted.
+
+If Git later asks for your name/email at your first commit, use **Terminal → New
+Terminal** for this one-time repository-local configuration. Replace the values
+with your name and your GitHub email (a GitHub no-reply email is fine):
+
+```text
+git config --local user.name "Your Name"
+git config --local user.email "YOUR_GITHUB_EMAIL"
+```
+
+These settings affect only this clone. Existing Git identity settings are preserved
+by setup. Ask the maintainer for help if you are unsure which email to use.
+
+## 4. If you use notebooks
+
+Put notebooks in `notebooks/`. Scientific Python modules belong in `src/phys440/`;
+see the [repository map](../README.md#where-to-work). There are no scientific
+dependencies in the initial repository.
+Before the first notebook, run **Project: Add Python package**, enter `ipykernel`,
+and include the resulting dependency files in your PR. If already declared, it
+is installed by setup and does not need adding again. No Jupyter server package
+or global kernel registration is required.
+
+Open an `.ipynb` file → **Select Kernel** (top right) → **Python Environments** →
+this project's `.venv`. Use **Restart** in the notebook toolbar after dependency
+updates or a branch/pull that changes libraries. Notebook formatting on save is
+not enabled; checks still cover Python notebook cells. Setup installs this project
+as the editable package `phys440`, so notebooks can import its modules directly.
+For example, after adding `src/phys440/analysis.py`, use `from phys440 import analysis`.
+The workspace starts notebook kernels at the repository root, so paths such as
+`data/raw/measurements.csv` and `results/figure.png` work from VS Code notebooks.
+Notebooks launched in another editor/server may use a different working directory.
+Source edits do not need reinstalling. First-time setup/sync installs the package
+automatically. Run a runnable module with **Project: Run Python module** and enter
+its import name, such as `phys440.simulation`, after creating that module.
+
+## If setup does not work
+
+| Message or symptom | What to do |
+| --- | --- |
+| `uv not found`, or task cannot launch `uv` | Install uv using the link above; fully quit and reopen VS Code. Rerun setup. |
+| Ruff/Python commands missing | Install and enable the recommended extensions; reopen the trusted workspace. |
+| Imports fail in the editor/notebook | Select this repo's `.venv` interpreter/kernel; restart the kernel. |
+| Download or sync fails | Reconnect, then run **Project: Sync Python environment**. Share persistent lock/version errors with the maintainer. |
+| Hook installation fails or `core.hooksPath` is configured | Share the full message with the maintainer. Setup leaves existing hook configuration alone. |
+| Commit cannot find `uv` after setup | Restart VS Code so its Git process inherits the updated application path. |
+
+Keep the error text and ask the maintainer. Do not try global `pip install` or
+force-pushing as a repair. You may safely repeat **Project: First-time setup**.
+Next: [Daily use](CONTRIBUTOR_DAILY_USE.md).

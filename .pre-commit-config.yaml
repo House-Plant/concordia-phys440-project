@@ -1,0 +1,32 @@
+minimum_pre_commit_version: '4.0.0'
+default_install_hook_types: [pre-commit, post-checkout, post-merge]
+repos:
+  - repo: local
+    hooks:
+      - id: protected-files
+        name: Protected files (commit stopped if changed)
+        entry: uv run --locked --no-sync python tools/check_protected_files.py
+        language: system
+        stages: [pre-commit]
+        always_run: true
+        pass_filenames: false
+      - id: ruff-check
+        name: Ruff lint (Save, review, and stage again if it fails)
+        entry: uv run --locked --no-sync ruff check --
+        language: system
+        stages: [pre-commit]
+        types_or: [python, pyi, jupyter]
+      - id: ruff-format
+        name: Ruff format (Save, review, and stage again if it fails)
+        entry: uv run --locked --no-sync ruff format --check --
+        language: system
+        stages: [pre-commit]
+        types_or: [python, pyi, jupyter]
+      - id: sync-environment
+        name: Sync this repository's Python environment
+        entry: uv run --no-project --python 3.12 tools/sync_environment.py
+        language: system
+        stages: [post-checkout, post-merge]
+        always_run: true
+        pass_filenames: false
+        verbose: true

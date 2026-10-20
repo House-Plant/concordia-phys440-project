@@ -1,0 +1,6 @@
+# Exact repository-relative file paths, one per line. No globs or directories.
+# Blank lines and lines starting with # are ignored. No inline comments.
+# JSON-quoted strings may represent paths with leading spaces, #, tabs or newlines.
+# MAINTAINER ACTION REQUIRED: specify actual protected paths; none identified yet.
+# Example only (inactive): data/reference measurements.csv
+# After editing, run: uv run --locked python tools/check_protected_files.py --update-readonly
