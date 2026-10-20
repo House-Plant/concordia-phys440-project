@@ -23,7 +23,7 @@ The actual default branch is `main` (`origin/HEAD` was inspected).
 ## What runs automatically
 
 - **[x] Environment:** `uv.lock` locks runtime and dev packages; `.venv` is ignored.
-  `src/phys440/` is the scientific package, installed editably during sync with
+  `src/modelling/` is the scientific package, installed editably during sync with
   the pinned lightweight `uv_build` backend. Only scientific code is packaged;
   `tools/`, repository guides, and workflow tests stay outside the package.
   Setup runs `uv sync --locked` and installs repository-local pre-commit,
@@ -31,7 +31,10 @@ The actual default branch is `main` (`origin/HEAD` was inspected).
   custom `core.hooksPath` instead of changing that setting. Resolve any hook conflict
   deliberately; do not change global Git configuration as part of this project.
 - **[x] Editor:** workspace Ruff formatting/import sorting on explicit Python Save.
-  Python, Ruff, and Jupyter are recommended extensions. Notebook save automation is
+  Contributor setup includes installing Python/Ruff extensions and enabling Ruff
+  for this workspace. The setup task installs the command-line tool; editor extension
+  installation is a separate one-time step. Jupyter is recommended for notebooks.
+  Notebook save automation is
   deliberately omitted because it has not been tested in VS Code here; Ruff CLI and
   commit/CI checks include notebooks. Select `.venv` and restart kernels after updates.
 - **[x] Commits:** check-only Ruff lint/format on staged Python/notebook files.
@@ -78,10 +81,10 @@ The actual default branch is `main` (`origin/HEAD` was inspected).
   for simultaneous changes to the same files. Never force-push shared history.
 - New runtime library: use **Project: Add Python package**. The import name may
   differ from its distribution name. Reusable scientific modules belong in
-  `src/phys440/` and are imported as `phys440`. The editable install is automatic
+  `src/modelling/` and are imported as `modelling`. The editable install is automatic
   through `uv sync --locked`; no contributor `pip install` step is required. Run
-  a runnable module with **Project: Run Python module**, entering `phys440.MODULE`,
-  or from the root with `uv run --locked python -m phys440.MODULE`.
+  a runnable module with **Project: Run Python module**, entering `modelling.MODULE`,
+  or from the root with `uv run --locked python -m modelling.MODULE`.
   Tasks and VS Code notebook kernels start at the root; use `data/` and `results/`
   paths. Other notebook launchers may choose a different working directory.
 - Repository automation and **all its tests** live in `tools/` and `tools/tests/`.

@@ -8,18 +8,18 @@ live in `pyproject.toml` and `uv.lock`.
 
 | Directory | Contents |
 | --- | --- |
-| `src/phys440/` | Scientific Python modules: models, simulation, analysis, and runnable modules |
+| `src/modelling/` | Scientific Python modules: models, simulation, analysis, and runnable modules |
 | `notebooks/` | Exploratory notebooks; select the project's `.venv` kernel |
 | `data/raw/` | Original input datasets; small, shareable data can be committed |
 | `results/` | Generated outputs; ignored by Git except the empty-directory placeholder |
 | `reports/` | Scientific write-up, bibliography, and selected figures/tables worth committing |
-| `tests/` | Scientific tests of the code in `src/phys440/` |
+| `tests/` | Scientific tests of the code in `src/modelling/` |
 
-Add a module such as `src/phys440/simulation.py` and import it with
-`from phys440.simulation import ...`. Setup installs `phys440` into `.venv` in
+Add a module such as `src/modelling/simulation.py` and import it with
+`from modelling.simulation import ...`. Setup installs `modelling` into `.venv` in
 editable mode, so saved source changes are available without reinstalling.
 Once a runnable module exists, use **Terminal → Run Task → Project: Run Python
-module** and enter `phys440.simulation`. Notebooks belong in `notebooks/`; the
+module** and enter `modelling.simulation`. Notebooks belong in `notebooks/`; the
 installed package works there too. Run tasks with the repository root open in
 VS Code. Tasks and VS Code notebook kernels use the root as their working
 directory, so data/output paths are `data/raw/...` and `results/...`. For notebooks
@@ -44,7 +44,8 @@ on storage and ignore rules before adding it to Git.
 - [Daily use: editing, notebooks, packages, branches, and PRs](docs/CONTRIBUTOR_DAILY_USE.md)
 - [Maintainer setup and upkeep](docs/MAINTAINER_SETUP.md)
 
-Start in VS Code with **Terminal → Run Task → Project: First-time setup**.
+Follow [contributor setup](docs/CONTRIBUTOR_SETUP.md), including the one-time Ruff
+extension setup. Then run **Terminal → Run Task → Project: First-time setup**.
 Then use **Save → Stage → Commit → Push → Open PR** on a task branch.
 
 The workflow implementation brief is kept under

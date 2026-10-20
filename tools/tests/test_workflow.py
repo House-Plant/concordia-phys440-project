@@ -126,13 +126,13 @@ def test_scientific_package_imports_away_from_root_without_tooling(tmp_path):
             sys.executable,
             "-I",
             "-c",
-            "import importlib.util, phys440; "
+            "import importlib.util, modelling; "
             "assert importlib.util.find_spec('project_environment') is None; "
-            "print(phys440.__file__)",
+            "print(modelling.__file__)",
         ],
         cwd=tmp_path,
         capture_output=True,
         text=True,
     )
     assert result.returncode == 0, result.stderr
-    assert Path(result.stdout.strip()).resolve() == ROOT / "src/phys440/__init__.py"
+    assert Path(result.stdout.strip()).resolve() == ROOT / "src/modelling/__init__.py"

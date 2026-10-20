@@ -30,11 +30,26 @@ The first setup needs an internet connection.
    `pyproject.toml` and `.vscode`, not its parent. Trust the workspace after
    confirming that it is this repository. If several repositories appear in
    Source Control, select **concordia-phys440-project** before any Git action.
-5. Open **Extensions**. Install the workspace recommendations: **Python**
-   (`ms-python.python`), **Ruff** (`charliermarsh.ruff`), and **Jupyter**
-   (`ms-toolsai.jupyter`). Jupyter is only needed when using notebooks.
 
-## 3. Run the one-time setup task
+## 3. Set up Python and Ruff in VS Code (once)
+
+1. Open **Extensions** from the left sidebar. Install **Python** by Microsoft
+   (`ms-python.python`) if it is not already installed.
+2. Find and install **Ruff** (`charliermarsh.ruff`). It is also listed under the
+   workspace's recommended extensions. This provides lint highlighting,
+   formatting, and import sorting in the editor.
+3. To keep a newly installed Ruff extension active only for this repository,
+   open its gear menu → **Disable** (globally), then reopen the menu →
+   **Enable (Workspace)**. Restart extensions if VS Code prompts you.
+   If you already use Ruff in other projects, keep your existing enablement if
+   you prefer. [VS Code extension controls](https://code.visualstudio.com/docs/configure/extensions/extension-marketplace#_disable-an-extension).
+4. Install **Jupyter** by Microsoft (`ms-toolsai.jupyter`) only if you use notebooks.
+
+The setup task below installs the Ruff command-line tool into this repository's
+`.venv`. It does **not** install or enable the VS Code extension. Complete the
+editor steps above once; no formatter commands are needed during normal editing.
+
+## 4. Run the one-time setup task
 
 1. Choose **Terminal → Run Task → Project: First-time setup**.
 2. Wait for this exact message:
@@ -47,7 +62,7 @@ The first setup needs an internet connection.
 4. Choose **Terminal → Run Task → Project: Run checks**. Success ends with
    **All project checks passed.** This verifies Python, tool imports, formatting,
    and the fast tests.
-5. Confirm editor setup once: create a temporary `.py` file containing `x=1`,
+5. Confirm **Ruff formatting on Save** once: create a temporary `.py` file containing `x=1`,
    then **Save**. It should become `x = 1`. Remove this temporary file afterward.
    If it stays unchanged, check that Ruff is enabled and this workspace is trusted.
 
@@ -63,9 +78,9 @@ git config --local user.email "YOUR_GITHUB_EMAIL"
 These settings affect only this clone. Existing Git identity settings are preserved
 by setup. Ask the maintainer for help if you are unsure which email to use.
 
-## 4. If you use notebooks
+## 5. If you use notebooks
 
-Put notebooks in `notebooks/`. Scientific Python modules belong in `src/phys440/`;
+Put notebooks in `notebooks/`. Scientific Python modules belong in `src/modelling/`;
 see the [repository map](../README.md#where-to-work). There are no scientific
 dependencies in the initial repository.
 Before the first notebook, run **Project: Add Python package**, enter `ipykernel`,
@@ -77,21 +92,22 @@ Open an `.ipynb` file → **Select Kernel** (top right) → **Python Environment
 this project's `.venv`. Use **Restart** in the notebook toolbar after dependency
 updates or a branch/pull that changes libraries. Notebook formatting on save is
 not enabled; checks still cover Python notebook cells. Setup installs this project
-as the editable package `phys440`, so notebooks can import its modules directly.
-For example, after adding `src/phys440/analysis.py`, use `from phys440 import analysis`.
+as the editable package `modelling`, so notebooks can import its modules directly.
+For example, after adding `src/modelling/analysis.py`, use `from modelling import analysis`.
 The workspace starts notebook kernels at the repository root, so paths such as
 `data/raw/measurements.csv` and `results/figure.png` work from VS Code notebooks.
 Notebooks launched in another editor/server may use a different working directory.
 Source edits do not need reinstalling. First-time setup/sync installs the package
 automatically. Run a runnable module with **Project: Run Python module** and enter
-its import name, such as `phys440.simulation`, after creating that module.
+its import name, such as `modelling.simulation`, after creating that module.
 
 ## If setup does not work
 
 | Message or symptom | What to do |
 | --- | --- |
 | `uv not found`, or task cannot launch `uv` | Install uv using the link above; fully quit and reopen VS Code. Rerun setup. |
-| Ruff/Python commands missing | Install and enable the recommended extensions; reopen the trusted workspace. |
+| Ruff/Python commands missing | Complete section 3; confirm Ruff is enabled for this workspace. Restart extensions if prompted. |
+| Saving leaves `x=1` unchanged | Open a saved `.py` file in this trusted repository, enable Ruff for this workspace, and Save explicitly. Ask the maintainer if it still does not format. |
 | Imports fail in the editor/notebook | Select this repo's `.venv` interpreter/kernel; restart the kernel. |
 | Download or sync fails | Reconnect, then run **Project: Sync Python environment**. Share persistent lock/version errors with the maintainer. |
 | Hook installation fails or `core.hooksPath` is configured | Share the full message with the maintainer. Setup leaves existing hook configuration alone. |

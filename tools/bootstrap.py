@@ -47,6 +47,9 @@ def main():
         print("Keep the message and ask the maintainer. Rerunning setup is safe.")
         return 1
     print("Setup complete: .venv ready; commit and branch/pull hooks installed.")
+    print(
+        "Editor formatting: enable the Ruff extension for this workspace (see docs/CONTRIBUTOR_SETUP.md)."
+    )
     print("Select .venv in Python: Select Interpreter. Run Project: Run checks.")
     return 0
 

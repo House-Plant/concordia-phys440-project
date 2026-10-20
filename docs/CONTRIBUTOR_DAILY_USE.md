@@ -2,7 +2,7 @@
 
 Once per clone: follow [setup](CONTRIBUTOR_SETUP.md). Use VS Code with this
 repository open. Save → Stage → Commit → Push → Open PR is the normal cycle.
-Put code in `src/phys440/`, notebooks in `notebooks/`, inputs in `data/`, scientific
+Put code in `src/modelling/`, notebooks in `notebooks/`, inputs in `data/`, scientific
 tests in `tests/`, and your write-up in `reports/`. Repository automation lives in
 `tools/`; see the [directory map](../README.md#where-to-work).
 
@@ -17,8 +17,8 @@ tests in `tests/`, and your write-up in `reports/`. Repository automation lives 
    Select `.venv` first. Run standalone scripts with the Python extension's
    **Run Python File in Terminal** button; for runnable package modules, use
    **Terminal → Run Task → Project: Run Python module** and enter the module's
-   name, such as `phys440.simulation`. For notebooks in `notebooks/`,
-   select `.venv` under **Select Kernel** and import reusable code from `phys440`,
+   name, such as `modelling.simulation`. For notebooks in `notebooks/`,
+   select `.venv` under **Select Kernel** and import reusable code from `modelling`,
    then run cells; notebook formatting on save is not enabled. Run **Terminal →
    Run Task → Project: Run checks** before uploading.
    An `import` statement uses a package; it does not install one. Already-declared

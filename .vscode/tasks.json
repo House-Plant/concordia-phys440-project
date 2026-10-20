@@ -46,7 +46,7 @@
     {
       "id": "moduleName",
       "type": "promptString",
-      "description": "Module to run, e.g. phys440.simulation after creating src/phys440/simulation.py"
+      "description": "Module to run, e.g. modelling.simulation after creating src/modelling/simulation.py"
     },
     {
       "id": "packageName",

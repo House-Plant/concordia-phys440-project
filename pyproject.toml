@@ -15,7 +15,7 @@ dependencies = [
 dev = ["pre-commit>=4,<5", "pytest>=8,<10", "pyyaml>=6,<7", "ruff>=0.11,<1"]
 
 [tool.uv.build-backend]
-module-name = "phys440"
+module-name = "modelling"
 
 [tool.ruff]
 target-version = "py312"
