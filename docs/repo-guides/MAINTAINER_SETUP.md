@@ -32,6 +32,7 @@ The actual default branch is `main` (`origin/HEAD` was inspected).
   custom `core.hooksPath` instead of changing that setting. Resolve any hook conflict
   deliberately; do not change global Git configuration as part of this project.
 - **[x] Editor:** workspace Ruff formatting/import sorting on explicit Python Save.
+  `scripts/personal/` is excluded from Ruff linting, formatting, and import sorting.
   Contributor setup includes installing Python/Ruff extensions and enabling Ruff
   for this workspace. The setup task installs the command-line tool; editor extension
   installation is a separate one-time step. Jupyter is recommended for notebooks.
@@ -39,6 +40,9 @@ The actual default branch is `main` (`origin/HEAD` was inspected).
   deliberately omitted because it has not been tested in VS Code here; Ruff CLI and
   commit/CI checks include notebooks. Select `.venv` and restart kernels after updates.
 - **[x] Commits:** check-only Ruff lint/format on staged Python/notebook files.
+  Personal files under `scripts/personal/` are excluded. `force-exclude = true`
+  in `pyproject.toml` enforces the exclusion even for explicit hook filenames;
+  the same configuration applies to the editor and CI.
   Unused imports (`F401`) are allowed for exploratory work; import sorting and
   the other configured checks still apply. This setting also applies in the editor
   and CI through `pyproject.toml`.
@@ -92,13 +96,15 @@ The actual default branch is `main` (`origin/HEAD` was inspected).
   belong in `scripts/testing/`. Neither needs `__init__.py`. Run a script with
   VS Code's **Run Python File in Terminal** using `.venv`, or from the repository
   root with `uv run --locked python scripts/PATH.py`. Scripts can import `tools`.
-  Ruff covers these files, while the default pytest suite does not execute them.
+  Ruff covers shared scripts, with `scripts/personal/` excluded; the default
+  pytest suite does not execute standalone scripts.
   Keep slow simulations and visual investigations here; move reusable functions
   into `src/tools/` and fast automated correctness checks into `tests/`.
 - Personal workspaces use `scripts/personal/<name>/`, with folders for Colin,
   Naomi, Sabrina, Jaeden, and Eshaal. When onboarding someone else, copy an
-  existing folder's empty structure. Personal `testing/` and `data/` files can be
-  committed and shared. `.gitignore` excludes every person's `figures/` and
+  existing folder's empty structure. Keep scripts directly in each person's folder
+  and datasets in its `data/` directory; both can be committed and shared.
+  `.gitignore` excludes every person's `figures/` and
   `outputs/` contents, except `.gitkeep` files.
   These local files are not backed up by Git. Personal folders are a team convention;
   contributors coordinate before editing another person's work. Keep these rules

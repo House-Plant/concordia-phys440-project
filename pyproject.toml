@@ -8,6 +8,7 @@ version = "0.1.0"
 description = "Concordia PHYS 440 modelling project"
 requires-python = ">=3.12,<3.13"
 dependencies = [
+    "matplotlib>=3.11.2",
     "numpy>=2.5.4",
 ]
 
@@ -20,7 +21,9 @@ module-name = "tools"
 [tool.ruff]
 target-version = "py312"
 line-length = 88
-extend-exclude = ["results"]
+extend-exclude = ["results", "scripts/personal"]
+# Commit hooks pass filenames explicitly; keep exclusions effective there too.
+force-exclude = true
 
 [tool.ruff.lint]
 select = ["E4", "E7", "E9", "F", "I"]

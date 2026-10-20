@@ -9,9 +9,11 @@ automated scientific checks, and `reports/` for your write-up. Repository automa
 lives in `maintenance/`; see the [directory map](../../README.md#where-to-work).
 
 For a personal workspace, use your named folder under `scripts/personal/`.
-Put scripts in its `testing/` folder and datasets in its `data/` folder. Stage,
+Put scripts directly in your personal folder and datasets in its `data/` folder. Stage,
 commit, and push these files to save and share them through Git. Put plots and
 other generated files in `figures/` and `outputs/`; their contents are ignored.
+Ruff linting, formatting, and import sorting are disabled in `scripts/personal/`,
+so personal files do not block commits for Ruff issues.
 Coordinate before editing someone else's folder. See the
 [personal-folder instructions](../../scripts/personal/README.md) for running scripts
 and choosing output paths. Continue using the normal task-branch workflow below.
@@ -23,7 +25,8 @@ and choosing output paths. Continue using the normal task-branch workflow below.
 2. **Make a branch.** Branch indicator → **Create New Branch**. Use a name such as
    `feat/baseline-model` or `fix/missing-values`. Keep one short-lived branch per
    task. Do not commit directly to `main`.
-3. **Work.** Edit and **Save** Python files; Ruff formats and organizes imports.
+3. **Work.** Edit and **Save** Python files; Ruff formats and organizes imports
+   outside `scripts/personal/`.
    Select `.venv` first. Open a standalone script from `scripts/` or
    `scripts/testing/` and use the Python extension's **Run Python File in
    Terminal** button, with the terminal at the repository root. These scripts need

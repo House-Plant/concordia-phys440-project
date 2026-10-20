@@ -33,15 +33,16 @@ uv run --locked python scripts/personal/colin/linting-test-1.py
 ```
 
 Use `scripts/testing/` for "run this and inspect the plot"; use `tests/` for
-"automatically verify this answer is correct." Scripts and experiments are covered
-by Ruff, but are not automatically executed by **Project: Run checks** or CI.
+"automatically verify this answer is correct." Shared scripts are covered by Ruff,
+but are not automatically executed by **Project: Run checks** or CI.
 Shared functions that other scripts need belong in `src/tools/`.
 
 Personal experimentation folders are provided under `scripts/personal/` for
 `colin`, `naomi`, `sabrina`, `jaeden`, and `eshaal`.
-Keep scripts in your `testing/` folder and datasets in your `data/` folder;
+Keep scripts directly in your personal folder and datasets in its `data/` folder;
 both can be committed and shared. Your `figures/` and `outputs/` contents stay
 local and are ignored by Git. Coordinate before editing another person's folder.
+Ruff linting, formatting, and import sorting are disabled under `scripts/personal/`.
 
 Once a runnable package module exists, use **Terminal → Run Task → Project: Run
 Python module** and enter `tools.simulation`. Notebooks belong in `notebooks/`;

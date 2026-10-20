@@ -6,7 +6,7 @@ the same structure:
 
 ```text
 scripts/personal/<your-name>/
-    testing/        # Scripts you can commit and share
+    your_script.py  # Put scripts directly in your personal folder
     data/           # Datasets you can commit and share
     figures/        # Generated plots and images (ignored)
     outputs/        # Other generated files (ignored)
@@ -14,9 +14,10 @@ scripts/personal/<your-name>/
 
 - Create, edit, and delete your own experiments freely. Coordinate before changing
   another person's folder. This is a team convention, not an access restriction.
-- Scripts, datasets, and notes in `testing/` and `data/` can be committed and
-  shared. Ruff still checks Python files. Personal scripts are not automatically
-  executed by the project's test suite.
+- Scripts and notes in your personal folder, and datasets in `data/`, can be committed and
+  shared. Ruff linting, formatting, and import sorting are disabled throughout
+  `scripts/personal/`, including the editor and commit/CI checks. Personal scripts
+  are not automatically executed by the project's test suite.
 - Contents of each person's `figures/` and `outputs/` directories are
   ignored by Git, except their `.gitkeep` placeholders. These files stay local;
   pushing your branch does not back them up or share them. Do not force-add them.
@@ -33,3 +34,6 @@ when sharing your scripts and data. Files are saved to Git when you stage and
 commit them; push those commits to share them on GitHub.
 
 See the [daily-use guide](../../docs/repo-guides/CONTRIBUTOR_DAILY_USE.md).
+
+For a runnable example that imports a shared tool, reads a CSV, and saves a plot
+and text result, see [Colin's example](colin/README.md).

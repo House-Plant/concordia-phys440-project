@@ -62,7 +62,8 @@ editor steps above once; no formatter commands are needed during normal editing.
 4. Choose **Terminal → Run Task → Project: Run checks**. Success ends with
    **All project checks passed.** This verifies Python, tool imports, formatting,
    and the fast tests.
-5. Confirm **Ruff formatting on Save** once: create a temporary `.py` file containing `x=1`,
+5. Confirm **Ruff formatting on Save** once: create a temporary `.py` file at the
+   repository root (outside `scripts/personal/`) containing `x=1`,
    then **Save**. It should become `x = 1`. Remove this temporary file afterward.
    If it stays unchanged, check that Ruff is enabled and this workspace is trusted.
 
@@ -88,9 +89,11 @@ File in Terminal**. Keep the terminal at the repository root so paths such as
 `scripts/personal/colin/linting-test-1.py` this way.
 
 For your own space, use your named folder under `scripts/personal/`.
-Its `testing/` and `data/` folders hold scripts and datasets you can commit and
-share; `figures/` and `outputs/` hold local files ignored by Git. Follow the
+Put scripts directly in your personal folder and datasets in its `data/` folder;
+both can be committed and shared. `figures/` and `outputs/` hold local files ignored by Git. Follow the
 [personal-folder instructions](../../scripts/personal/README.md).
+Ruff linting, formatting, and import sorting are disabled throughout
+`scripts/personal/`; your personal files can be committed without Ruff checks.
 
 These directories need no `__init__.py`. Scripts can import reusable tools from
 `src/tools/`, such as `from tools import analysis` after creating
@@ -126,7 +129,7 @@ its import name, such as `tools.simulation`, after creating that module.
 | --- | --- |
 | `uv not found`, or task cannot launch `uv` | Install uv using the link above; fully quit and reopen VS Code. Rerun setup. |
 | Ruff/Python commands missing | Complete section 3; confirm Ruff is enabled for this workspace. Restart extensions if prompted. |
-| Saving leaves `x=1` unchanged | Open a saved `.py` file in this trusted repository, enable Ruff for this workspace, and Save explicitly. Ask the maintainer if it still does not format. |
+| Saving leaves `x=1` unchanged | This is expected under `scripts/personal/`. Elsewhere, open a saved `.py` file in this trusted repository, enable Ruff for this workspace, and Save explicitly. Ask the maintainer if it still does not format. |
 | Imports fail in the editor/notebook | Select this repo's `.venv` interpreter/kernel; restart the kernel. |
 | Download or sync fails | Reconnect, then run **Project: Sync Python environment**. Share persistent lock/version errors with the maintainer. |
 | Hook installation fails or `core.hooksPath` is configured | Share the full message with the maintainer. Setup leaves existing hook configuration alone. |
