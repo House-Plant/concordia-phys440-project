@@ -35,6 +35,9 @@ The actual default branch is `main` (`origin/HEAD` was inspected).
   deliberately omitted because it has not been tested in VS Code here; Ruff CLI and
   commit/CI checks include notebooks. Select `.venv` and restart kernels after updates.
 - **[x] Commits:** check-only Ruff lint/format on staged Python/notebook files.
+  Unused imports (`F401`) are allowed for exploratory work; import sorting and
+  the other configured checks still apply. This setting also applies in the editor
+  and CI through `pyproject.toml`.
   Code fixes happen on Save or through a deliberate edit. Like standard pre-commit,
   the framework temporarily sets aside unstaged edits while checking staged content
   and restores them afterward. The project scripts never discard work.
