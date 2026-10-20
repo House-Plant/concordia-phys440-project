@@ -78,11 +78,25 @@ git config --local user.email "YOUR_GITHUB_EMAIL"
 These settings affect only this clone. Existing Git identity settings are preserved
 by setup. Ask the maintainer for help if you are unsure which email to use.
 
-## 5. If you use notebooks
+## 5. Run standalone scripts
 
-Put notebooks in `notebooks/`. Scientific Python modules belong in `src/modelling/`;
-see the [repository map](../README.md#where-to-work). There are no scientific
-dependencies in the initial repository.
+Put scripts for simulations, data analysis, and generating figures in `scripts/`.
+Use `scripts/experiments/` for informal investigations that you run and inspect
+yourself. Open a script, select this project's `.venv`, then choose **Run Python
+File in Terminal**. Keep the terminal at the repository root so paths such as
+`data/raw/...` and `results/...` work. For example, you can run the existing
+`scripts/experiments/linting-test-1.py` this way.
+
+These directories need no `__init__.py`. Scripts can import reusable tools from
+`src/tools/`, such as `from tools import analysis` after creating
+`src/tools/analysis.py`. Automated scientific checks with pass/fail assertions
+belong in `tests/`; see the [repository map](../README.md#where-to-work).
+
+## 6. If you use notebooks
+
+Put notebooks in `notebooks/`. Scientific Python modules belong in `src/tools/`;
+see the [repository map](../README.md#where-to-work). Setup installs the dependencies
+already declared in `pyproject.toml`, including NumPy.
 Before the first notebook, run **Project: Add Python package**, enter `ipykernel`,
 and include the resulting dependency files in your PR. If already declared, it
 is installed by setup and does not need adding again. No Jupyter server package
@@ -92,14 +106,14 @@ Open an `.ipynb` file → **Select Kernel** (top right) → **Python Environment
 this project's `.venv`. Use **Restart** in the notebook toolbar after dependency
 updates or a branch/pull that changes libraries. Notebook formatting on save is
 not enabled; checks still cover Python notebook cells. Setup installs this project
-as the editable package `modelling`, so notebooks can import its modules directly.
-For example, after adding `src/modelling/analysis.py`, use `from modelling import analysis`.
+as the editable package `tools`, so notebooks can import its modules directly.
+For example, after adding `src/tools/analysis.py`, use `from tools import analysis`.
 The workspace starts notebook kernels at the repository root, so paths such as
 `data/raw/measurements.csv` and `results/figure.png` work from VS Code notebooks.
 Notebooks launched in another editor/server may use a different working directory.
 Source edits do not need reinstalling. First-time setup/sync installs the package
 automatically. Run a runnable module with **Project: Run Python module** and enter
-its import name, such as `modelling.simulation`, after creating that module.
+its import name, such as `tools.simulation`, after creating that module.
 
 ## If setup does not work
 

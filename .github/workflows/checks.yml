@@ -27,4 +27,4 @@ jobs:
       - name: Install locked environment
         run: uv sync --locked
       - name: Lock consistency, Ruff, and offline tests
-        run: uv run --locked python tools/run_checks.py
+        run: uv run --locked python maintenance/run_checks.py

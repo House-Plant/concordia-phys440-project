@@ -15,9 +15,9 @@ ROOT = Path(__file__).resolve().parents[2]
 
 @pytest.fixture
 def sync_script(monkeypatch):
-    monkeypatch.syspath_prepend(str(ROOT / "tools"))
+    monkeypatch.syspath_prepend(str(ROOT / "maintenance"))
     spec = importlib.util.spec_from_file_location(
-        "sync_hook", ROOT / "tools/sync_environment.py"
+        "sync_hook", ROOT / "maintenance/sync_environment.py"
     )
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)
@@ -126,13 +126,13 @@ def test_scientific_package_imports_away_from_root_without_tooling(tmp_path):
             sys.executable,
             "-I",
             "-c",
-            "import importlib.util, modelling; "
+            "import importlib.util, tools; "
             "assert importlib.util.find_spec('project_environment') is None; "
-            "print(modelling.__file__)",
+            "print(tools.__file__)",
         ],
         cwd=tmp_path,
         capture_output=True,
         text=True,
     )
     assert result.returncode == 0, result.stderr
-    assert Path(result.stdout.strip()).resolve() == ROOT / "src/modelling/__init__.py"
+    assert Path(result.stdout.strip()).resolve() == ROOT / "src/tools/__init__.py"

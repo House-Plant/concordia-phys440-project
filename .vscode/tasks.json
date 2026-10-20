@@ -5,7 +5,7 @@
       "label": "Project: First-time setup",
       "type": "process",
       "command": "uv",
-      "args": ["run", "--no-project", "--python", "3.12", "tools/bootstrap.py"],
+      "args": ["run", "--no-project", "--python", "3.12", "maintenance/bootstrap.py"],
       "problemMatcher": []
     },
     {
@@ -33,7 +33,7 @@
       "label": "Project: Run checks",
       "type": "process",
       "command": "uv",
-      "args": ["run", "--locked", "python", "tools/run_checks.py"],
+      "args": ["run", "--locked", "python", "maintenance/run_checks.py"],
       "group": "test",
       "problemMatcher": []
     }
@@ -46,7 +46,7 @@
     {
       "id": "moduleName",
       "type": "promptString",
-      "description": "Module to run, e.g. modelling.simulation after creating src/modelling/simulation.py"
+      "description": "Module to run, e.g. tools.simulation after creating src/tools/simulation.py"
     },
     {
       "id": "packageName",

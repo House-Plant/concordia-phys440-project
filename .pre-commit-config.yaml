@@ -17,7 +17,7 @@ repos:
         types_or: [python, pyi, jupyter]
       - id: sync-environment
         name: Sync this repository's Python environment
-        entry: uv run --no-project --python 3.12 tools/sync_environment.py
+        entry: uv run --no-project --python 3.12 maintenance/sync_environment.py
         language: system
         stages: [post-checkout, post-merge]
         always_run: true
