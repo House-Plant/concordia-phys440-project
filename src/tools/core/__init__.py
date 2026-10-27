@@ -1,0 +1,1 @@
+"""Shared modelling foundations."""
