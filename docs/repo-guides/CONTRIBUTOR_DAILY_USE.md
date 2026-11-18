@@ -78,6 +78,42 @@ missing → **Add Python package** task; check `.venv` first. Behind remote → 
 before **Push**. Sync failed → **Sync Python environment** task. Merge conflict or
 an unresolved error → stop and ask the maintainer.
 
+## If someone else's commit blocks Sync or Push
+
+If you're having issues syncing or pushing because another person's commit is
+ahead of yours, or Git says the branches have diverged, make sure you have run
+these commands **in a terminal at this repo's root**:
+
+```sh
+git config --local pull.rebase false
+git config --local pull.ff true
+```
+
+The updated **Project: First-time setup** applies these settings automatically.
+Existing contributors can rerun setup or run the two commands above. Each person
+must do this in each clone; these local settings are not distributed by a Push.
+They let Pull merge independent commits when needed, and fast-forward when
+possible. In a GUI that asks for a pull strategy, select **Merge**.
+
+For an agreed shared working branch, keep that branch checked out instead of
+creating a new task branch for each piece of work. Coordinate changes to `main`
+and PRs with the team. The daily sync cycle on the shared branch is:
+
+1. Save and commit your intended changes, leaving no unfinished edits. Confirm
+   you and your colleagues are using the same working branch.
+2. **Pull** from that branch's upstream. If Git combines the histories cleanly,
+   it may create a merge commit; accept its merge message if prompted.
+3. Wait for environment sync, restart any live consoles/kernels, and run
+   **Project: Run checks** (or `uv run --locked python maintenance/run_checks.py`).
+4. **Push**. If someone pushed while you were doing this, repeat Pull, checks,
+   and Push.
+
+Separate commits are not automatically a file conflict. If Git does report
+conflicting edits, stop and ask for help resolving them. These settings do not
+resolve actual conflicts or permit overwriting colleagues' work; never force-push
+to get around a rejected Push. An explicit **fast-forward-only** or **rebase**
+GUI action can override these defaults, so use the normal merge-based Pull.
+
 ## Spyder and PyCharm daily workflow
 
 Complete [your editor's setup](CONTRIBUTOR_SETUP.md#7-use-spyder-or-pycharm) once

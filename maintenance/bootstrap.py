@@ -42,11 +42,21 @@ def main():
             env=env,
             check=True,
         )
+        for key, value in (("pull.rebase", "false"), ("pull.ff", "true")):
+            subprocess.run(
+                ["git", "config", "--local", key, value],
+                cwd=ROOT,
+                env=env,
+                check=True,
+            )
     except (OSError, RuntimeError, subprocess.CalledProcessError) as error:
         print(f"Setup stopped: {error}")
         print("Keep the message and ask the maintainer. Rerunning setup is safe.")
         return 1
     print("Setup complete: .venv ready; commit and branch/pull hooks installed.")
+    print(
+        "Git pulls: merge divergent commits; fast-forward when possible (this clone only)."
+    )
     print(f"IDE Python interpreter: {python_executable()}")
     print("Editor and Git GUI setup: docs/repo-guides/CONTRIBUTOR_SETUP.md")
     print("VS Code: select .venv in Python: Select Interpreter.")

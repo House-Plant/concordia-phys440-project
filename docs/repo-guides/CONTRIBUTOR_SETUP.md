@@ -15,6 +15,9 @@ Choose one route; VS Code is not required:
 All routes use the same Python 3.12 `.venv`, shared packages, commit hooks, and
 GitHub review process. `.vscode` settings and **Project:** tasks apply only in
 VS Code; other editors use the equivalent commands listed in this guide.
+Setup also configures this clone's Git pulls to merge divergent commits and
+fast-forward when possible. Existing contributors can rerun setup or use the
+[sync/Push troubleshooting commands](CONTRIBUTOR_DAILY_USE.md#if-someone-elses-commit-blocks-sync-or-push).
 
 ## 1. Install the applications for your system
 
