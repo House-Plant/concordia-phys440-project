@@ -18,7 +18,14 @@ dependencies = [
 ]
 
 [dependency-groups]
-dev = ["pre-commit>=4,<5", "pytest>=8,<10", "pyyaml>=6,<7", "ruff>=0.11,<1"]
+dev = [
+    "pre-commit>=4,<5",
+    "pytest>=8,<10",
+    "pyyaml>=6,<7",
+    "ruff>=0.11,<1",
+    # Keep Spyder 6.1 console support through normal sync and Git hooks.
+    "spyder-kernels>=3.1.6,<3.2",
+]
 
 [tool.uv.build-backend]
 module-name = "tools"

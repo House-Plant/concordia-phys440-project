@@ -1,5 +1,4 @@
 {
-  "python.defaultInterpreterPath": "${workspaceFolder}/.venv",
   "python.terminal.executeInFileDir": false,
   "jupyter.notebookFileRoot": "${workspaceFolder}",
   "python.testing.pytestEnabled": true,

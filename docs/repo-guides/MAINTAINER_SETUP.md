@@ -6,7 +6,8 @@ The actual default branch is `main` (`origin/HEAD` was inspected).
 
 ## Initial setup
 
-1. Run **Project: First-time setup**, then **Project: Run checks** in VS Code.
+1. Follow [contributor setup](CONTRIBUTOR_SETUP.md) for VS Code, Spyder, or PyCharm.
+   Run bootstrap and the checks using that editor's route.
 2. Publish the reviewed changes through your normal branch/PR process. Under
    **Actions**, confirm the **Project checks** workflow completes successfully.
    It runs on PRs to `main` and pushes to `main`, with one check named **Quality**.
@@ -36,6 +37,12 @@ The actual default branch is `main` (`origin/HEAD` was inspected).
   Contributor setup includes installing Python/Ruff extensions and enabling Ruff
   for this workspace. The setup task installs the command-line tool; editor extension
   installation is a separate one-time step. Jupyter is recommended for notebooks.
+  Python environment selection uses VS Code's discovery of the root `.venv`.
+  Do not set `python.defaultInterpreterPath` to the `.venv` directory: Python
+  Environments 1.20.1 resolves that directory but then uses it as the executable,
+  overriding a valid selection on startup. This causes Run, import analysis, and
+  editor test discovery to fail. An explicit executable path differs across OSes;
+  automatic `.venv` discovery avoids that shared-setting problem.
   Notebook save automation is
   deliberately omitted because it has not been tested in VS Code here; Ruff CLI and
   commit/CI checks include notebooks. Select `.venv` and restart kernels after updates.
@@ -68,6 +75,10 @@ The actual default branch is `main` (`origin/HEAD` was inspected).
    inspect formatting and import order. Delete it afterward. Select `.venv` for
    script runs and notebook kernels. The GUI Save/Commit buttons use the configured
    formatter and normal Git hooks; actual GUI behavior still needs your local check.
+   Verify **Run Python File in Terminal** uses `.venv/bin/python` on macOS/Linux
+   or `.venv\Scripts\python.exe` on Windows. Close and reopen the workspace and
+   repeat without reselecting the interpreter. **Project: Run checks** invokes
+   Python directly and cannot establish that the editor's interpreter is correct.
 3. On a disposable branch, commit a valid Python edit. Confirm both Ruff checks run.
    Temporarily stage unformatted code to confirm a commit is blocked; Save, review,
    restage, and retry. Commits should not rewrite staged content.
@@ -126,9 +137,17 @@ The actual default branch is `main` (`origin/HEAD` was inspected).
   Seaborn is declared directly because this pySSEM release imports it without
   declaring it in its package dependencies. Keep the isolated Model import check
   when updating either package.
-- First notebooks: add `ipykernel` with the package task, then select `.venv`.
-  The scientific dependencies above are already installed by setup/sync.
-  The contributor guide covers running scripts and notebooks.
+- Spyder 6.1.x: `spyder-kernels>=3.1.6,<3.2` is a default dev dependency;
+  setup/sync also installs its `ipykernel` dependency for consoles/notebooks.
+  Keeping this in the default dev group prevents ordinary `uv sync --locked`
+  calls (including branch/pull hooks) from removing console support. The Spyder
+  application stays outside the project environment. Before adopting another
+  Spyder release, check its required kernel range, update the shared dependency
+  and lock together, and test a real console launch. Do not document a one-off
+  `pip install` or optional group that normal hooks would remove.
+  Scientific dependencies above are also installed by setup/sync; select `.venv`
+  in each IDE and notebook kernel. The contributor guide includes a Run/reopen
+  check; automated CLI checks cannot verify the editor's selected interpreter.
 - Dev-only dependency (maintainer terminal): `uv add --dev DISTRIBUTION`.
   Remove an unused runtime dependency with `uv remove DISTRIBUTION` (add `--dev`
   for dev tools). Review and commit both dependency files. Contributors normally
@@ -143,7 +162,7 @@ The actual default branch is `main` (`origin/HEAD` was inspected).
   update `requires-python`, `.python-version`, Ruff's target, both bootstrap/hook
   `--python` arguments, and the smoke-test assertion; regenerate the lock, sync,
   rerun setup/tests on contributor OSes, and update the guides.
-- The initial dev tools are Ruff, pre-commit, pytest and PyYAML for workflow
+- The dev tools are Ruff, pre-commit, pytest, Spyder console support, and PyYAML for workflow
   validation. PyYAML is also a dependency of pre-commit, so it adds no extra install.
   The pinned `uv_build` build backend installs only the scientific package. There
   is no second package manager, daemon, title linter,
@@ -169,5 +188,27 @@ Windows and Linux execution, live VS Code Save/notebook/Source Control behavior,
 and GitHub Actions runs remain unverified. Process tasks pass package input as one
 argument with an option terminator; Python scripts choose Windows
 `Scripts/python.exe` or POSIX `bin/python` without shell-specific bootstrap commands.
+
+The Spyder/PyCharm routes were researched against upstream documentation on
+2026-11-18. Spyder 6.1.8 requires `spyder-kernels>=3.1.6,<3.2` (verified against
+its published package metadata). PyCharm's built-in Ruff settings vary by release;
+the targeted Ruff commands are the common fallback. GitHub Desktop 3.5.5+ has
+shell-aware hook support; PyCharm's **Run Git hooks** must remain enabled.
+
+On macOS, the updated lock, Ruff checks, and all 12 pytest cases passed. Repeat
+locked sync retained console support; a real `spyder_kernels.console` process
+accepted a client execution request and imported NumPy, Matplotlib, and this
+clone's editable `tools` through `.venv`. Existing locked package versions and
+the scientific runtime requirements were preserved.
+In a disposable clone, setup succeeded twice with the printed interpreter path;
+Git hooks rejected an unsorted/unformatted shared file, accepted it after the
+documented formatting commands, and preserved kernel/scientific imports after
+a branch switch and its sync hook.
+
+For onboarding acceptance, exercise each contributor's real GUI: run the
+setup-check file, reopen and run again, confirm formatting, commit a shared Python
+edit with hook output, switch branches and Pull, then confirm sync and restart
+consoles. Spyder/PyCharm/GitHub Desktop GUI flows have not been exercised locally;
+documentation review and terminal checks are not a substitute for that check.
 
 Contributor links: [Setup](CONTRIBUTOR_SETUP.md) · [Daily use](CONTRIBUTOR_DAILY_USE.md).

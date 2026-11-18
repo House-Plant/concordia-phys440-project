@@ -15,7 +15,7 @@ def main():
     ):
         if not shutil.which(tool):
             print(f"Setup stopped: {tool} not found. Install it: {url}")
-            print("Restart VS Code, then run Project: First-time setup again.")
+            print("Restart your IDE and terminal, then rerun setup.")
             return 1
     try:
         root = subprocess.check_output(
@@ -47,10 +47,10 @@ def main():
         print("Keep the message and ask the maintainer. Rerunning setup is safe.")
         return 1
     print("Setup complete: .venv ready; commit and branch/pull hooks installed.")
-    print(
-        "Editor formatting: enable the Ruff extension for this workspace (see docs/CONTRIBUTOR_SETUP.md)."
-    )
-    print("Select .venv in Python: Select Interpreter. Run Project: Run checks.")
+    print(f"IDE Python interpreter: {python_executable()}")
+    print("Editor and Git GUI setup: docs/repo-guides/CONTRIBUTOR_SETUP.md")
+    print("VS Code: select .venv in Python: Select Interpreter.")
+    print("Checks: uv run --locked python maintenance/run_checks.py")
     return 0
 
 

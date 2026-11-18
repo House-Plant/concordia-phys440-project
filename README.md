@@ -4,6 +4,10 @@ Python modelling and research workspace: build reusable scientific tools, then u
 them in independent scripts and notebooks for simulations, analysis, and visualization.
 Python 3.12 and a repository-local `.venv` are managed with uv. Shared dependencies
 live in `pyproject.toml` and `uv.lock`.
+VS Code, Spyder 6.1.x, and PyCharm setup routes are documented in the
+[contributor guide](docs/repo-guides/CONTRIBUTOR_SETUP.md). Each uses the same
+`.venv` and Git hooks; Spyder/PyCharm equivalents for the VS Code task buttons
+are in [daily use](docs/repo-guides/CONTRIBUTOR_DAILY_USE.md#spyder-and-pycharm-daily-workflow).
 
 ## Scientific packages
 
@@ -95,9 +99,13 @@ adding it to Git.
 - [Daily use: editing, notebooks, packages, branches, and PRs](docs/repo-guides/CONTRIBUTOR_DAILY_USE.md)
 - [Maintainer setup and upkeep](docs/repo-guides/MAINTAINER_SETUP.md)
 
-Follow [contributor setup](docs/repo-guides/CONTRIBUTOR_SETUP.md), including the one-time Ruff
-extension setup. Then run **Terminal → Run Task → Project: First-time setup**.
-Then use **Save → Stage → Commit → Push → Open PR** on a task branch.
+Follow [contributor setup](docs/repo-guides/CONTRIBUTOR_SETUP.md) for your editor.
+In VS Code, install the recommended extensions and run **Terminal → Run Task →
+Project: First-time setup**. Spyder/PyCharm users run the same bootstrap from a
+terminal and configure their interpreter and Git GUI using the guide. The shared
+development environment includes Spyder 6.1 console support and `ipykernel` for
+notebooks; installing the IDE application is separate.
+Then use **Save → Stage/select changes → Commit → Push → Open PR** on a task branch.
 
 The workflow implementation brief is kept under
 [docs/maintenance/](docs/maintenance/CODEX_REPO_WORKFLOW_SETUP.md).

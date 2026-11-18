@@ -26,7 +26,10 @@ scripts/personal/<your-name>/
   `src/tools/` so other scripts can import them.
 
 Select the project's `.venv`, open your script, and choose **Run Python File in
-Terminal**. Keep the terminal at the repository root. Use output paths such as
+Terminal** in VS Code, **Run / F5** in Spyder, or **Run** in PyCharm.
+Keep the working directory at the repository root; configure it explicitly for
+Spyder/PyCharm as shown in the [setup guide](../../docs/repo-guides/CONTRIBUTOR_SETUP.md#7-use-spyder-or-pycharm).
+Use output paths such as
 `scripts/personal/colin/figures/comparison.png`, replacing `colin` with your name;
 plots and datasets are only saved there if your script writes to those paths.
 These folders need no `__init__.py`. Use the normal task-branch and PR workflow
