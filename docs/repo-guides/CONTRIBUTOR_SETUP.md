@@ -62,6 +62,10 @@ editor steps above once; no formatter commands are needed during normal editing.
 4. Choose **Terminal → Run Task → Project: Run checks**. Success ends with
    **All project checks passed.** This verifies Python, tool imports, formatting,
    and the fast tests.
+   NumPy, Matplotlib, SciPy, pandas, SymPy, Seaborn, and MOCAT-pySSEM are installed by setup;
+   see the [package imports](../../README.md#scientific-packages). You do not need
+   to add them individually. For an existing clone, **Project: Sync Python
+   environment** installs newly declared packages.
 5. Confirm **Ruff formatting on Save** once: create a temporary `.py` file at the
    repository root (outside `scripts/personal/`) containing `x=1`,
    then **Save**. It should become `x = 1`. Remove this temporary file afterward.
@@ -104,7 +108,8 @@ belong in `tests/`; see the [repository map](../../README.md#where-to-work).
 
 Put notebooks in `notebooks/`. Scientific Python modules belong in `src/tools/`;
 see the [repository map](../../README.md#where-to-work). Setup installs the dependencies
-already declared in `pyproject.toml`, including NumPy.
+already declared in `pyproject.toml`; see the
+[scientific package list](../../README.md#scientific-packages).
 Before the first notebook, run **Project: Add Python package**, enter `ipykernel`,
 and include the resulting dependency files in your PR. If already declared, it
 is installed by setup and does not need adding again. No Jupyter server package

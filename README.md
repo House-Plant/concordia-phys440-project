@@ -5,6 +5,30 @@ them in independent scripts and notebooks for simulations, analysis, and visuali
 Python 3.12 and a repository-local `.venv` are managed with uv. Shared dependencies
 live in `pyproject.toml` and `uv.lock`.
 
+## Scientific packages
+
+Setup and environment sync install these shared dependencies into `.venv`:
+
+| Package | Purpose | Import |
+| --- | --- | --- |
+| NumPy | Arrays and numerical calculations | `import numpy as np` |
+| Matplotlib | Plots and figures | `import matplotlib.pyplot as plt` |
+| SciPy | Integration, optimization, and scientific algorithms | `import scipy` |
+| pandas | Tabular data and CSV analysis | `import pandas as pd` |
+| SymPy | Symbolic equations and algebra | `import sympy as sp` |
+| Seaborn | Statistical plots and pySSEM's plotting support | `import seaborn as sns` |
+| MOCAT-pySSEM (`pyssem`) | Orbital debris source-sink modelling | `from pyssem.model import Model` |
+
+Use these imports in shared modules, personal scripts, or notebooks with `.venv`
+selected. Third-party packages are installed dependencies; your reusable code
+belongs in `src/tools/`. Existing contributors can run **Project: Sync Python
+environment** to get dependency updates, then restart any open notebook kernels.
+
+[MOCAT-pySSEM](https://github.com/ARCLab-MIT/pyssem) is distributed as `pyssem`.
+Its published release is currently a prerelease; this project pins
+`0.1.dev465` for reproducibility. See its upstream guide for model configuration
+and simulation examples.
+
 ## Where to work
 
 | Directory | Contents |

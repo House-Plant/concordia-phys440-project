@@ -116,8 +116,18 @@ The actual default branch is `main` (`origin/HEAD` was inspected).
   Pytest discovers `tests/` and `maintenance/tests/` separately with importlib mode.
   Once scientific tests exist, run only those with `uv run --locked pytest tests`;
   run infrastructure tests with `uv run --locked pytest maintenance/tests`.
-- First notebooks: add `ipykernel` with that task, then select `.venv`. NumPy,
-  SciPy, plotting libraries and model frameworks are intentionally not guessed.
+- Shared scientific dependencies include NumPy, Matplotlib, SciPy, pandas, SymPy, Seaborn,
+  and MOCAT-pySSEM, whose distribution and import name is `pyssem`. Keep these in
+  `pyproject.toml` and `uv.lock`; do not copy third-party packages into `src/`.
+  `pyssem` is pinned to the published prerelease `0.1.dev465`. Review upstream
+  release changes before upgrading it; verify `from pyssem.model import Model`
+  as well as the repository checks after dependency changes. Model simulations
+  may need additional configuration and data; package installation does not run them.
+  Seaborn is declared directly because this pySSEM release imports it without
+  declaring it in its package dependencies. Keep the isolated Model import check
+  when updating either package.
+- First notebooks: add `ipykernel` with the package task, then select `.venv`.
+  The scientific dependencies above are already installed by setup/sync.
   The contributor guide covers running scripts and notebooks.
 - Dev-only dependency (maintainer terminal): `uv add --dev DISTRIBUTION`.
   Remove an unused runtime dependency with `uv remove DISTRIBUTION` (add `--dev`

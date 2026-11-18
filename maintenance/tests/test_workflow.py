@@ -136,3 +136,22 @@ def test_scientific_package_imports_away_from_root_without_tooling(tmp_path):
     )
     assert result.returncode == 0, result.stderr
     assert Path(result.stdout.strip()).resolve() == ROOT / "src/tools/__init__.py"
+
+
+def test_pyssem_model_imports_away_from_root(tmp_path):
+    # Import the public entry point, not just distribution metadata: pySSEM
+    # imports Seaborn without declaring it as a package dependency.
+    result = subprocess.run(
+        [
+            sys.executable,
+            "-I",
+            "-c",
+            "from pyssem.model import Model; print(Model.__module__)",
+        ],
+        cwd=tmp_path,
+        capture_output=True,
+        text=True,
+        timeout=60,
+    )
+    assert result.returncode == 0, result.stderr
+    assert result.stdout.strip() == "pyssem.model"
