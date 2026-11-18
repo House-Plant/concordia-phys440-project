@@ -258,6 +258,15 @@ Conda/virtualenv environment for this project.
 
 ### Spyder: interpreter, working directory, and formatting
 
+**Spyder 6.1 uses a global default interpreter, not one saved per project.**
+Select this clone's Python once; that preference normally survives restarting
+Spyder if the executable still exists. Opening another project does not
+automatically select that project's `.venv`. If you change the default for
+another project, select this clone's interpreter again when returning and restart
+the kernel. A Git branch switch within this clone keeps the same `.venv` path;
+wait for sync and restart the kernel to load its updated packages.
+[Spyder's project-interpreter tracking issue](https://github.com/spyder-ide/spyder/issues/11362).
+
 1. Choose **Projects → New Project → Existing directory** and select the repo
    root. This creates local Spyder project settings; it does not create another
    Git repository. Later, use **Projects → Open Project** to return to it.

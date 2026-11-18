@@ -96,6 +96,12 @@ Use the clone's `.venv` interpreter and the repo root as the working directory:
 | Pick/check Python | **Preferences → Python interpreter**, then restart the kernel | Project **Python Interpreter** settings; check run configurations and Python Console too |
 | After changing packages or branches | Restart the IPython kernel before running again | Restart Python Console and any notebook kernels; rerun scripts in a fresh process |
 
+Spyder 6.1's interpreter preference is global. It normally remembers the last
+chosen default across restarts, but changing projects does not automatically
+switch defaults. After using another project's environment, reselect this
+clone's `.venv` and restart the kernel. Git branch switches within this repo use
+the same environment path; sync changes its packages, not the selected path.
+
 For a process that should start cleanly each time, the terminal script/module
 commands below work in either editor. Spyder keeps a live console: old variables
 and imports can otherwise outlast a run or branch change. Save files before
