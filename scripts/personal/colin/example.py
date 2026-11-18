@@ -7,10 +7,11 @@ Run this file using the project's .venv in VS Code, or from the repo root:
 from pathlib import Path
 
 import matplotlib.pyplot as plt
+
 import numpy as np
 
 from tools.tools_example import calculate_mean
-
+from tools.source_sink.jaetest import yourface
 
 def main():
     # Locate Colin's folders relative to this file, regardless of where you run it.
