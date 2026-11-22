@@ -1,8 +1,7 @@
 """Data container shared by the simulation's external physics modules.
 
 Array dimensions: S = shells, A = satellite-age bins, L = debris-length bins,
-Q = debris area-to-mass bins. Histograms store integer object counts. Time and age
-are unitless; physical quantities use the units indicated in their names.
+Q = debris area-to-mass bins. Histograms store integer object counts.
 Initialization supplies the arrays and parameters.
 """
 
