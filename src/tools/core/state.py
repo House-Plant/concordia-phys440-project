@@ -1,9 +1,9 @@
 """Data container shared by the simulation's external physics modules.
 
 Array dimensions: S = shells, A = satellite-age bins, L = debris-length bins,
-Q = area-to-mass bins. Histograms store integer object counts. Time and age
+Q = debris area-to-mass bins. Histograms store integer object counts. Time and age
 are unitless; physical quantities use the units indicated in their names.
-Initialization supplies the arrays and parameters. This file only declares data.
+Initialization supplies the arrays and parameters.
 """
 
 from collections.abc import Sequence
@@ -107,9 +107,6 @@ class SimulationState:
         Satellites (active or derelict) return total count across ages in their shell
         Debris entities return count in their specified shell, length, and area-to-mass bin
         Returns integer array [N] in the same order as the supplied entity references
-        Only requested counts are calculated so full population arrays are not copied
-        The result is a new array of derived values, not a view of the histograms
-        Entity references do not include requested addition or removal quantities
         NOTE: Satellite entity references must use zero for both physical-bin indices
         """
         return
@@ -121,10 +118,9 @@ class SimulationState:
     ):
         """
         Code to get satellite age histogram counts for active or derelict population
-        Shell is optional. In the absence, returns a read-only view [S, A] of all shells
+        Shell selection is optional. In the absence, returns a read-only view [S, A] of all shells
         Passing one shell index returns a read-only view [A] of that shell's age counts
         Uses basic indexing so population data is shared without copying or reconstruction
-        Counts are not normalized and no ages are sampled
         NOTE: NOT FOR DEBRIS POPULATION, WILL THROW ERROR IF USED
         """
         return
@@ -135,14 +131,12 @@ class SimulationState:
         Shell is optional. In the absence, returns a read-only view [S, L, Q] of all shells
         Passing one shell index returns a read-only view [L, Q] of that shell's debris counts
         Uses basic indexing so population data is shared without copying or reconstruction
-        Length and area-to-mass bins are preserved; callers can further slice the view
         """
         return
 
     def get_collisions_this_step(self):
         """
         Code to get a read-only live mapping of the sparse collision tally for the current timestep
-        Wraps the existing dictionary without copying its entries
         Maps (first_entity, second_entity) to integer event count
         Both entity references include their shell. Each unordered pair is stored once.
         Callers can filter by shell while iterating without constructing another dictionary
