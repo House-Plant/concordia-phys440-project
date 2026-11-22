@@ -139,7 +139,6 @@ class SimulationState:
         Code to get a read-only live mapping of the sparse collision tally for the current timestep
         Maps (first_entity, second_entity) to integer event count
         Both entity references include their shell. Each unordered pair is stored once.
-        Callers can filter by shell while iterating without constructing another dictionary
         Empty mapping indicates no recorded collisions
         NOTE: Reading does not clear or consume the collision tally
         """
