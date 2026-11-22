@@ -27,8 +27,8 @@ class SimulationState:
     """Current populations, prescribed inputs, and the collision handoff.
 
     External modules operate on this same object. Population totals and averages
-    are derived from the histograms; recording data and local working buffers
-    are kept outside this container.
+    are derived from the histogram age distribution. Data recording, along with all
+    associated model physics, happen externally in seperate modules.
     """
 
     # 1. Primary runtime information.
@@ -45,9 +45,9 @@ class SimulationState:
     random_streams: RandomStreams
 
     # Sampled events cannot be recovered from the population histograms alone.
-    # Temporary tally: (shell, first participant, second participant) ===> count.
-    # Participants: ("active", 0, 0), ("derelict", 0, 0), or
-    # ("debris", length_bin, area_to_mass_bin). Store each unordered pair once.
+    # Temporary tally: (first participant, second participant) ===> count.
+    # Participants: ("active", shell, 0, 0), ("derelict", shell, 0, 0), or
+    # ("debris", shell, length_bin, area_to_mass_bin). Store each unordered pair once.
     # Collision sampling writes collision tallies, and then fragmentation consumes them to update populations.
     # Clears before the next cycle.
     # the field(default_factory=dict) essentially ensures only copies of this can be assigned to variables.
@@ -97,7 +97,9 @@ class SimulationState:
     # METHODS (2): Population Getter Methods
     # Below are the instance methods indicated for getting (reading) population attributes,
     # as well as some other simulation parameters.
-    # All getters return independent copies without modifying state or using random streams.
+    # Histogram getters return read-only views of all shells or one shell, without copying counts.
+    # Views reflect later in-place population updates; callers must explicitly copy for snapshots.
+    # Getters do not modify state or use random streams. Entity totals are calculated on request.
     # Invalid entity types and negative or out-of-range indices will throw errors.
 
     def get_entity_counts(self, entities: Sequence[Entity]):
@@ -106,6 +108,8 @@ class SimulationState:
         Satellites (active or derelict) return total count across ages in their shell
         Debris entities return count in their specified shell, length, and area-to-mass bin
         Returns integer array [N] in the same order as the supplied entity references
+        Only requested counts are calculated so full population arrays are not copied
+        The result is a new array of derived values, not a view of the histograms
         Entity references do not include requested addition or removal quantities
         NOTE: Satellite entity references must use zero for both physical-bin indices
         """
@@ -114,35 +118,36 @@ class SimulationState:
     def get_satellite_age_counts(
         self,
         population: Literal["active", "derelict"],
-        shells: npt.ArrayLike | None = None,
+        shell: int | None = None,
     ):
         """
         Code to get satellite age histogram counts for active or derelict population
-        Shells is optional. In the absence, all altitude shells are selected
-        Returns integer array [number of selected shells, A] in requested shell order
-        Keeps the shell axis even when only one shell is selected
+        Shell is optional. In the absence, returns a read-only view [S, A] of all shells
+        Passing one shell index returns a read-only view [A] of that shell's age counts
+        Uses basic indexing so population data is shared without copying or reconstruction
         Counts are not normalized and no ages are sampled
         NOTE: NOT FOR DEBRIS POPULATION, WILL THROW ERROR IF USED
         """
         return
 
-    def get_debris_counts(self, shells: npt.ArrayLike | None = None):
+    def get_debris_counts(self, shell: int | None = None):
         """
-        Code to get joint debris histogram counts for selected altitude shells
-        Shells is optional. In the absence, all altitude shells are selected
-        Returns integer array [number of selected shells, L, Q] in requested shell order
-        Keeps the shell axis even when only one shell is selected
-        Length and area-to-mass bins are preserved; callers can slice or sum the copy
+        Code to get joint debris histogram counts for all altitude shells or one shell
+        Shell is optional. In the absence, returns a read-only view [S, L, Q] of all shells
+        Passing one shell index returns a read-only view [L, Q] of that shell's debris counts
+        Uses basic indexing so population data is shared without copying or reconstruction
+        Length and area-to-mass bins are preserved; callers can further slice the view
         """
         return
 
-    def get_collisions_this_step(self, shells: npt.ArrayLike | None = None):
+    def get_collisions_this_step(self):
         """
-        Code to get a copy of the sparse collision tally for the current timestep
-        Shells is optional. In the absence, collisions from all shells are selected
-        Returns dictionary mapping (first_entity, second_entity) to integer event count
-        Both entity references include their shell; each unordered pair is stored once
-        Empty dictionary indicates no recorded collisions for the selected shells
+        Code to get a read-only live mapping of the sparse collision tally for the current timestep
+        Wraps the existing dictionary without copying its entries
+        Maps (first_entity, second_entity) to integer event count
+        Both entity references include their shell. Each unordered pair is stored once.
+        Callers can filter by shell while iterating without constructing another dictionary
+        Empty mapping indicates no recorded collisions
         NOTE: Reading does not clear or consume the collision tally
         """
         return
@@ -153,7 +158,7 @@ class SimulationState:
     # and will throw a runtime warning if such a modification is requested.
 
     def remove_entities(
-        entities: npt.ArrayLike[npt.Arraylike[Entity, int]], random_generator=None
+        self, entities: npt.ArrayLike[npt.Arraylike[Entity, int]], random_generator=None
     ):
         """
         Code to remove number of entities of given types
@@ -164,7 +169,7 @@ class SimulationState:
         return
 
     def add_entities(
-        entities: npt.ArrayLike[npt.ArrayLike[Entity, int]], random_generator=None
+        self, entities: npt.ArrayLike[npt.ArrayLike[Entity, int]], random_generator=None
     ):
         """
         Code to add number of entities of given types
@@ -175,6 +180,7 @@ class SimulationState:
         return
 
     def transfer_entities_shell(
+        self,
         entities: npt.ArrayLike[npt.ArrayLike[Entity, int]],
         new_altitude_shells: npt.ArrayLike,
         ages: npt.ArrayLike[int] = None,
@@ -190,6 +196,7 @@ class SimulationState:
         return
 
     def derelict_satelites_active(
+        self,
         entities: npt.ArrayLike[npt.ArrayLike[Entity, int]],
         ages: npt.ArrayLike[int] = None,
         random_generator=None,
@@ -204,6 +211,7 @@ class SimulationState:
         return
 
     def remove_satelites(
+        self,
         entities: npt.ArrayLike[npt.ArrayLike[Entity, int]],
         ages: npt.ArrayLike[int] = None,
         random_generator=None,
@@ -216,14 +224,16 @@ class SimulationState:
         """
         return
 
-    def add_satelites_new(satelite_nums: npt.ArrayLike[npt.ArrayLike[Entity, int]]):
+    def add_satelites_new(
+        self, satelite_nums: npt.ArrayLike[npt.ArrayLike[Entity, int]]
+    ):
         """
         Code to add satelites to first age bin
         NOTE: NOT FOR DERELICT OR DEBRIS ENTITIES, WILL THROW ERROR IF USED
         """
         return
 
-    def advance_ages_satelites():
+    def advance_ages_satelites(self):
         """
         Code that checks if n != 0, where
         n = np.floor( ((time % time_bin_width) + dt)/time_bin_width )
