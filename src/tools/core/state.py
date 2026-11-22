@@ -6,6 +6,7 @@ are unitless; physical quantities use the units indicated in their names.
 Initialization supplies the arrays and parameters. This file only declares data.
 """
 
+from collections.abc import Sequence
 from dataclasses import dataclass, field
 from typing import Literal
 
@@ -96,6 +97,55 @@ class SimulationState:
     # METHODS (2): Population Getter Methods
     # Below are the instance methods indicated for getting (reading) population attributes,
     # as well as some other simulation parameters.
+    # All getters return independent copies without modifying state or using random streams.
+    # Invalid entity types and negative or out-of-range indices will throw errors.
+
+    def get_entity_counts(self, entities: Sequence[Entity]):
+        """
+        Code to get number of entities of given types
+        Satellites (active or derelict) return total count across ages in their shell
+        Debris entities return count in their specified shell, length, and area-to-mass bin
+        Returns integer array [N] in the same order as the supplied entity references
+        Entity references do not include requested addition or removal quantities
+        NOTE: Satellite entity references must use zero for both physical-bin indices
+        """
+        return
+
+    def get_satellite_age_counts(
+        self,
+        population: Literal["active", "derelict"],
+        shells: npt.ArrayLike | None = None,
+    ):
+        """
+        Code to get satellite age histogram counts for active or derelict population
+        Shells is optional. In the absence, all altitude shells are selected
+        Returns integer array [number of selected shells, A] in requested shell order
+        Keeps the shell axis even when only one shell is selected
+        Counts are not normalized and no ages are sampled
+        NOTE: NOT FOR DEBRIS POPULATION, WILL THROW ERROR IF USED
+        """
+        return
+
+    def get_debris_counts(self, shells: npt.ArrayLike | None = None):
+        """
+        Code to get joint debris histogram counts for selected altitude shells
+        Shells is optional. In the absence, all altitude shells are selected
+        Returns integer array [number of selected shells, L, Q] in requested shell order
+        Keeps the shell axis even when only one shell is selected
+        Length and area-to-mass bins are preserved; callers can slice or sum the copy
+        """
+        return
+
+    def get_collisions_this_step(self, shells: npt.ArrayLike | None = None):
+        """
+        Code to get a copy of the sparse collision tally for the current timestep
+        Shells is optional. In the absence, collisions from all shells are selected
+        Returns dictionary mapping (first_entity, second_entity) to integer event count
+        Both entity references include their shell; each unordered pair is stored once
+        Empty dictionary indicates no recorded collisions for the selected shells
+        NOTE: Reading does not clear or consume the collision tally
+        """
+        return
 
     # METHODS (3): Population Setter Methods
     # Below are the instance methods indicated for setting (modifying) population attributes
