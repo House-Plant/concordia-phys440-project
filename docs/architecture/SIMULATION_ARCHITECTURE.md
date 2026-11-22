@@ -3,6 +3,9 @@
 Each physics module is an independently configured class. It receives its own
 configuration file and the common configuration at construction, then modifies
 the shared state through `step(state)`. Modules execute sequentially.
+Collision and fragmentation code lives in `src/tools/collision/` and
+`src/tools/fragmentation/`, respectively (`tools.collision` and
+`tools.fragmentation` when imported).
 
 **1. Global configuration**
 
@@ -29,27 +32,47 @@ the shared state through `step(state)`. Modules execute sequentially.
 
 **3. Simulation state**
 
-One data-only object contains:
+The `SimulationState` dataclass is constructed with keyword arguments. Its runtime
+fields are:
 
 | Attribute | Meaning |
 | --- | --- |
 | `time` | Elapsed simulation time in seconds. |
 | `dt` | Current timestep duration in seconds, selected by the controller for this cycle. |
-| `active_by_age[S, A]` | Active-satellite counts by shell and age bin. |
-| `derelict_counts[S]` | Intact inactive-satellite counts by shell. |
+| `active_counts[S, A]` | Active-satellite counts by shell and age bin. |
+| `derelict_counts[S, A]` | Intact inactive-satellite counts by shell and age bin. |
 | `debris_counts[S, L, Q]` | Joint debris counts by shell, length, and area-to-mass bin. |
-| `collisions_this_step` | Accepted collision counts keyed by shell and participating population bins. |
-| `random_generator` | Shared random stream used by stochastic steps. |
+| `collisions_this_step` | Sparse collision tally mapping an unordered pair of entity references to an integer event count. |
+| `random_streams` | Run-seeded collection of persistent component streams, accessed through `state.rng(component)`. |
 
 Here `S`, `A`, `L`, and `Q` are the corresponding global grid sizes.
-Collision-bin references are `("active", age)`, `("derelict",)`, or
-`("debris", length, area_to_mass)`. Each unordered pair is tallied once.
+Entity references are `("active", shell, 0, 0)`, `("derelict", shell, 0, 0)`, or
+`("debris", shell, length_bin, area_to_mass_bin)`. Collision keys are
+`(first_entity, second_entity)`; both participants must occupy the same shell.
+Each unordered pair is tallied once, and absent pairs have no recorded events.
 Masses, geometry, and encounter speeds are recovered from shared definitions.
+Satellite collision selection is age-independent. When applying removals or
+disabling, select ages from the remaining age histogram without replacement.
+
+Both satellite populations use the same fixed-width age bins. Age means age since
+launch: active-to-derelict transitions and shell transfers preserve it. Age
+progression advances both histograms by the number of age-bin intervals crossed
+during the timestep. The configured shift width must match `age_edges`.
 
 Counts are nonnegative integers. Histograms are the authoritative inventories;
-totals and averages are derived. Configuration, recording history, and local
-working arrays do not belong in state. A temporary value belongs there only when
+totals and averages are derived. The current state also holds initialized shared
+grids, prescribed physical inputs, and derived lookup tables; these remain fixed
+during evolution. Model-specific configuration, recording history, and local
+working arrays remain outside state. A temporary value belongs there only when
 another module needs it, as with the collision handoff.
+
+State methods provide access to runtime resources and population edits; physics
+calculations remain in the modules. Population mutation interfaces currently exist
+as stubs in `src/tools/core/state.py`, covering additions/removals, age-preserving
+shell transfers, active-to-derelict transitions, and age progression. Methods with
+an optional `ages` argument use explicit age selections when supplied; otherwise,
+satellite selection requires the calling component's random generator. Population
+getter and sampling-helper interfaces are not yet implemented.
 
 **4. Module instance and public interface**
 
@@ -65,12 +88,19 @@ class ModelModule:
 - Construction initializes the model, without receiving or modifying state.
 - `step(state)` processes `[state.time, state.time + state.dt)`, using the
   controller-selected duration, which may change between cycles.
-  It writes directly to `state`, rather than returning a replacement state.
+  It updates the supplied state in place through population methods, rather than
+  returning a replacement state.
 - The module may read any agreed state field, but writes only its assigned fields.
   It must not change the state schema, shared grids, or simulation clock.
 - Private calculations, temporary buffers, and model-specific memory may remain
   internal when necessary or computationally efficient. Information needed downstream uses an agreed state field.
-- ANY randomness or sampling must use `state.random_generator` (whom has a unique seed).
+- All randomness must use the module's persistent generator from
+  `state.rng(component)`, including sampling inside population methods. Pass that
+  generator through their `random_generator` argument when required; modules must
+  not create independently seeded generators or use global random functions.
+  `RandomStreams` derives streams from the run seed and stable component IDs:
+  `initialization`, `source_sink`, `collision`, `fragmentation`, and `atmosphere`.
+  Extra draws in one stream do not advance another component's stream.
 
 **5. Controller and initialization**
 
@@ -91,8 +121,9 @@ Each cycle follows this order:
 7. Recorder: observe the completed state and write results.
 
 All physics steps refer to the same controller-selected interval. Retirement/removal
-must update the active-age histogram; shell transfers preserve the age or
-physical-bin indices.
+must update the active-age histogram; failed disposal and disabling without
+destruction transfer the selected age counts to the derelict histogram. Shell
+transfers preserve the age or physical-bin indices.
 Age progression and retirement use elapsed time in seconds. Collision sampling
 accounts for competing uses of the same population across pair types. Fragmentation owns collision removals and
 reclassification, preventing duplicate updates.
