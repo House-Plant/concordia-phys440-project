@@ -9,7 +9,6 @@ Initialization supplies the arrays and parameters.
 import warnings
 from collections.abc import Sequence
 from dataclasses import dataclass, field
-from types import MappingProxyType
 from typing import Literal
 
 import numpy as np
@@ -151,6 +150,9 @@ class SimulationState:
             self._check_index(shell, counts.shape[0])
             view = counts[shell]
 
+        # This magic flag makes a read-only image without copying the array completely.
+        # This saves massive compute for small timesteps, while also enforcing
+        # read-only permissions so there are no "forgot to write .copy()" shenanigans afoot
         view.flags.writeable = False
         return view
 
@@ -159,7 +161,6 @@ class SimulationState:
         Code to get joint debris histogram counts for all altitude shells or one shell
         Shell is optional. In the absence, returns a read-only view [S, L, Q] of all shells
         Passing one shell index returns a read-only view [L, Q] of that shell's debris counts
-        Uses basic indexing so population data is shared without copying or reconstruction
         """
         if shell is None:
             view = self.debris_counts.view()
@@ -167,18 +168,17 @@ class SimulationState:
             self._check_index(shell, self.debris_counts.shape[0])
             view = self.debris_counts[shell]
 
+        # See comment above
         view.flags.writeable = False
         return view
 
     def get_collisions_this_step(self):
         """
-        Code to get a read-only live mapping of the sparse collision tally for the current timestep
+        Code to get the existing sparse collision tally dictionary for the current timestep
         Maps (first_entity, second_entity) to integer event count
-        Both entity references include their shell. Each unordered pair is stored once.
         Empty mapping indicates no recorded collisions
-        NOTE: Reading does not clear or consume the collision tally
         """
-        return MappingProxyType(self.collisions_this_step)
+        return self.collisions_this_step
 
     # METHODS (3): Population Setter Methods
     # Below are the instance methods indicated for setting (modifying) population attributes
