@@ -6,8 +6,10 @@ are unitless; physical quantities use the units indicated in their names.
 Initialization supplies the arrays and parameters.
 """
 
+import warnings
 from collections.abc import Sequence
 from dataclasses import dataclass, field
+from types import MappingProxyType
 from typing import Literal
 
 import numpy as np
@@ -15,11 +17,9 @@ import numpy.typing as npt
 
 from tools.core.randomness import RandomStreams
 
-type CollisionParticipant = npt.ArrayLike[
-    Literal["active", "derelict", "debris"], int, int
-]
+type CollisionParticipant = tuple[Literal["active", "derelict", "debris"], int, int]
 
-type Entity = npt.ArrayLike[Literal["active", "derelict", "debris"], int, int, int]
+type Entity = tuple[Literal["active", "derelict", "debris"], int, int, int]
 
 
 @dataclass(kw_only=True)
@@ -51,9 +51,7 @@ class SimulationState:
     # Collision sampling writes collision tallies, and then fragmentation consumes them to update populations.
     # Clears before the next cycle.
     # the field(default_factory=dict) essentially ensures only copies of this can be assigned to variables.
-    collisions_this_step: dict[npt.ArrayLike[Entity, Entity], int] = field(
-        default_factory=dict
-    )
+    collisions_this_step: dict[tuple[Entity, Entity], int] = field(default_factory=dict)
 
     # 2. Primary unchanging definitions and prescribed inputs.
     # Configured time grid. Duration = count * width
@@ -109,7 +107,29 @@ class SimulationState:
         Returns integer array [N] in the same order as the supplied entity references
         NOTE: Satellite entity references must use zero for both physical-bin indices
         """
-        return
+        counts = np.zeros(len(entities), dtype=int)
+
+        for index in range(len(entities)):
+            entity = entities[index]
+            population = entity[0]
+            shell = entity[1]
+            length_bin = entity[2]
+            area_to_mass_bin = entity[3]
+
+            if population == "active" or population == "derelict":
+                if length_bin != 0 or area_to_mass_bin != 0:
+                    raise ValueError("Satellite physical-bin indices must be zero.")
+                age_counts = self.get_satellite_age_counts(population, shell)
+                counts[index] = age_counts.sum()
+            elif population == "debris":
+                debris_counts = self.get_debris_counts(shell)
+                self._check_index(length_bin, debris_counts.shape[0])
+                self._check_index(area_to_mass_bin, debris_counts.shape[1])
+                counts[index] = debris_counts[length_bin, area_to_mass_bin]
+            else:
+                raise ValueError("Unknown population type.")
+
+        return counts
 
     def get_satellite_age_counts(
         self,
@@ -123,7 +143,16 @@ class SimulationState:
         Uses basic indexing so population data is shared without copying or reconstruction
         NOTE: NOT FOR DEBRIS POPULATION, WILL THROW ERROR IF USED
         """
-        return
+        counts = self._satellite_population(population)
+
+        if shell is None:
+            view = counts.view()
+        else:
+            self._check_index(shell, counts.shape[0])
+            view = counts[shell]
+
+        view.flags.writeable = False
+        return view
 
     def get_debris_counts(self, shell: int | None = None):
         """
@@ -132,7 +161,14 @@ class SimulationState:
         Passing one shell index returns a read-only view [L, Q] of that shell's debris counts
         Uses basic indexing so population data is shared without copying or reconstruction
         """
-        return
+        if shell is None:
+            view = self.debris_counts.view()
+        else:
+            self._check_index(shell, self.debris_counts.shape[0])
+            view = self.debris_counts[shell]
+
+        view.flags.writeable = False
+        return view
 
     def get_collisions_this_step(self):
         """
@@ -142,7 +178,7 @@ class SimulationState:
         Empty mapping indicates no recorded collisions
         NOTE: Reading does not clear or consume the collision tally
         """
-        return
+        return MappingProxyType(self.collisions_this_step)
 
     # METHODS (3): Population Setter Methods
     # Below are the instance methods indicated for setting (modifying) population attributes
@@ -150,7 +186,7 @@ class SimulationState:
     # and will throw a runtime warning if such a modification is requested.
 
     def remove_entities(
-        self, entities: npt.ArrayLike[npt.Arraylike[Entity, int]], random_generator=None
+        self, entities: Sequence[tuple[Entity, int]], random_generator=None
     ):
         """
         Code to remove number of entities of given types
@@ -158,10 +194,25 @@ class SimulationState:
         NOTE: Recommend using dedicated remove_satelites method for launches and transfer_entities_shell for transfers
         If this is used for satelites, requires passing your random_generator stream
         """
-        return
+        for entry in entities:
+            entity = entry[0]
+            number = entry[1]
+            population = entity[0]
+            shell = entity[1]
+            length_bin = entity[2]
+            area_to_mass_bin = entity[3]
+
+            if population == "debris":
+                available = self.debris_counts[shell, length_bin, area_to_mass_bin]
+                if self._can_change_population(number, available):
+                    self.debris_counts[shell, length_bin, area_to_mass_bin] -= number
+            else:
+                self.remove_satelites(
+                    [(entity, number)], random_generator=random_generator
+                )
 
     def add_entities(
-        self, entities: npt.ArrayLike[npt.ArrayLike[Entity, int]], random_generator=None
+        self, entities: Sequence[tuple[Entity, int]], random_generator=None
     ):
         """
         Code to add number of entities of given types
@@ -169,13 +220,30 @@ class SimulationState:
         NOTE: Recommend using dedicated add_satelites_new method for launches and transfer_entities_shell for transfers
         If this is used for satelites, requires passing your random_generator stream
         """
-        return
+        for entry in entities:
+            entity = entry[0]
+            number = entry[1]
+            population = entity[0]
+            shell = entity[1]
+            length_bin = entity[2]
+            area_to_mass_bin = entity[3]
+
+            if not self._can_change_population(number):
+                continue
+
+            if population == "debris":
+                self.debris_counts[shell, length_bin, area_to_mass_bin] += number
+            else:
+                counts = self._satellite_population(population)
+                if random_generator is None:
+                    raise ValueError("Satellite additions require a random generator.")
+                counts[shell, 0] += number
 
     def transfer_entities_shell(
         self,
-        entities: npt.ArrayLike[npt.ArrayLike[Entity, int]],
+        entities: Sequence[tuple[Entity, int]],
         new_altitude_shells: npt.ArrayLike,
-        ages: npt.ArrayLike[int] = None,
+        ages: Sequence[int] | None = None,
         random_generator=None,
     ):
         """
@@ -185,12 +253,39 @@ class SimulationState:
         If this is used for satelites, requires passing your random_generator stream
         Supports optional passing of age argument, if age specific transfers are required.
         """
-        return
+        for index in range(len(entities)):
+            entry = entities[index]
+            entity = entry[0]
+            number = entry[1]
+            population = entity[0]
+            shell = entity[1]
+            length_bin = entity[2]
+            area_to_mass_bin = entity[3]
+            new_shell = new_altitude_shells[index]
+
+            if population == "debris":
+                counts = self.debris_counts
+                available = counts[shell, length_bin, area_to_mass_bin]
+                if self._can_change_population(number, available):
+                    counts[shell, length_bin, area_to_mass_bin] -= number
+                    counts[new_shell, length_bin, area_to_mass_bin] += number
+            else:
+                counts = self._satellite_population(population)
+                age = None
+                if ages is not None:
+                    age = ages[index]
+
+                selected = self._select_satellite_ages(
+                    counts[shell], number, age, random_generator
+                )
+                if selected is not None:
+                    counts[shell] -= selected
+                    counts[new_shell] += selected
 
     def derelict_satelites_active(
         self,
-        entities: npt.ArrayLike[npt.ArrayLike[Entity, int]],
-        ages: npt.ArrayLike[int] = None,
+        entities: Sequence[tuple[Entity, int]],
+        ages: Sequence[int] | None = None,
         random_generator=None,
     ):
         """
@@ -200,30 +295,71 @@ class SimulationState:
         NOTE: NOT FOR DERELICT OR DEBRIS ENTITIES, WILL THROW ERROR IF USED
         If this is used without ages, requires passing your random_generator stream
         """
-        return
+        for index in range(len(entities)):
+            entry = entities[index]
+            entity = entry[0]
+            number = entry[1]
+            population = entity[0]
+            shell = entity[1]
+            if population != "active":
+                raise ValueError("Only active satellites can become derelicts.")
+
+            age = None
+            if ages is not None:
+                age = ages[index]
+
+            selected = self._select_satellite_ages(
+                self.active_counts[shell], number, age, random_generator
+            )
+            if selected is not None:
+                self.active_counts[shell] -= selected
+                self.derelict_counts[shell] += selected
 
     def remove_satelites(
         self,
-        entities: npt.ArrayLike[npt.ArrayLike[Entity, int]],
-        ages: npt.ArrayLike[int] = None,
+        entities: Sequence[tuple[Entity, int]],
+        ages: Sequence[int] | None = None,
         random_generator=None,
     ):
         """
-        Code to remove number of satelites (active or derelict) of various ages'
+        Code to remove number of satelites (active or derelict) of various ages
         Ages is optional. In the absence, satelites will be picked from local age distribution
         NOTE: NOT FOR DEBRIS ENTITIES, WILL THROW ERROR IF USED
         If this is used without ages, requires passing your random_generator stream
         """
-        return
+        for index in range(len(entities)):
+            entry = entities[index]
+            entity = entry[0]
+            number = entry[1]
+            population = entity[0]
+            shell = entity[1]
+            counts = self._satellite_population(population)
 
-    def add_satelites_new(
-        self, satelite_nums: npt.ArrayLike[npt.ArrayLike[Entity, int]]
-    ):
+            age = None
+            if ages is not None:
+                age = ages[index]
+
+            selected = self._select_satellite_ages(
+                counts[shell], number, age, random_generator
+            )
+            if selected is not None:
+                counts[shell] -= selected
+
+    def add_satelites_new(self, satelite_nums: Sequence[tuple[Entity, int]]):
         """
         Code to add satelites to first age bin
         NOTE: NOT FOR DERELICT OR DEBRIS ENTITIES, WILL THROW ERROR IF USED
         """
-        return
+        for entry in satelite_nums:
+            entity = entry[0]
+            number = entry[1]
+            population = entity[0]
+            shell = entity[1]
+            if population != "active":
+                raise ValueError("New satellites must belong to the active population.")
+
+            if self._can_change_population(number):
+                self.active_counts[shell, 0] += number
 
     def advance_ages_satelites(self):
         """
@@ -231,4 +367,60 @@ class SimulationState:
         n = np.floor( ((time % time_bin_width) + dt)/time_bin_width )
         If this is true, it shifts (advances) satelite age histogram counts by n bins
         """
-        return
+        elapsed = (self.time % self.time_bin_width) + self.dt
+        intervals = int(np.floor(elapsed / self.time_bin_width))
+        if intervals == 0:
+            return
+
+        # Run for every age bin in both active and derelict satelites
+        satellite_populations = [self.active_counts, self.derelict_counts]
+        for counts in satellite_populations:
+            oldest_age_bin = counts.shape[1] - 1
+            age_bin = oldest_age_bin - 1
+
+            while age_bin >= 0:
+                new_age_bin = age_bin + intervals
+                if new_age_bin > oldest_age_bin:
+                    new_age_bin = oldest_age_bin
+
+                counts[:, new_age_bin] += counts[:, age_bin]
+                counts[:, age_bin] = 0
+                age_bin -= 1
+
+    def _satellite_population(self, population):
+        if population == "active":
+            return self.active_counts
+        if population == "derelict":
+            return self.derelict_counts
+        raise ValueError("Population must be active or derelict satellites.")
+
+    def _check_index(self, index, size):
+        if index < 0 or index >= size:
+            raise IndexError("Population index is out of range.")
+
+    def _can_change_population(self, number, available=None):
+        if number < 0:
+            warnings.warn("Population counts cannot be negative.", RuntimeWarning)
+            return False
+        if available is not None and number > available:
+            warnings.warn("Not enough entities are available.", RuntimeWarning)
+            return False
+        return True
+
+    def _select_satellite_ages(self, counts, number, age, random_generator):
+        if age is None:
+            available = counts.sum()
+        else:
+            available = counts[age]
+
+        if not self._can_change_population(number, available):
+            return None
+
+        if age is None:
+            if random_generator is None:
+                raise ValueError("Satellite selection requires a random generator.")
+            return random_generator.multivariate_hypergeometric(counts, number)
+
+        selected = np.zeros_like(counts)
+        selected[age] = number
+        return selected
