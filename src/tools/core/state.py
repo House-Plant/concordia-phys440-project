@@ -56,7 +56,7 @@ class SimulationState:
     )
 
     # 2. Primary unchanging definitions and prescribed inputs.
-    # Configured time grid. Duration = count * width; integration dt is independent.
+    # Configured time grid. Duration = count * width
     time_bin_count: int
     time_bin_width: float
 
@@ -65,7 +65,7 @@ class SimulationState:
     relative_speed_m_s: np.ndarray  # [S], relative average collision speed in shell
 
     # Histogram boundaries are independent of controller-selected timesteps.
-    age_edges: np.ndarray  # [A + 1], unitless age, starting at zero
+    age_edges: np.ndarray  # [A + 1], age in seconds, starting at zero
     length_edges_m: np.ndarray  # [L + 1], characteristic fragment length
     area_to_mass_edges_m2_per_kg: np.ndarray  # [Q + 1]
 
@@ -98,8 +98,7 @@ class SimulationState:
     # Below are the instance methods indicated for getting (reading) population attributes,
     # as well as some other simulation parameters.
     # Histogram getters return read-only views of all shells or one shell, without copying counts.
-    # Views reflect later in-place population updates; callers must explicitly copy for snapshots.
-    # Getters do not modify state or use random streams. Entity totals are calculated on request.
+    # Getters do not modify state or use random streams.
     # Invalid entity types and negative or out-of-range indices will throw errors.
 
     def get_entity_counts(self, entities: Sequence[Entity]):
