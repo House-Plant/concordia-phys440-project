@@ -84,6 +84,7 @@ class SimulationState:
     debris_mass_kg: np.ndarray  # [L, Q], from area / representative area-to-mass
 
     # METHODS (1): Core Utility Methods
+    # Below are the instance methods indicated to core utilities within the instance.
 
     def rng(self, component: str) -> np.random.Generator:
         """
@@ -93,8 +94,13 @@ class SimulationState:
         return self.random_streams.get(component)
 
     # METHODS (2): Population Getter Methods
+    # Below are the instance methods indicated for getting (reading) population attributes,
+    # as well as some other simulation parameters.
 
     # METHODS (3): Population Setter Methods
+    # Below are the instance methods indicated for setting (modifying) population attributes
+    # Implicitly, all methods below will refuse setting negative population numbers under any circumstance,
+    # and will throw a runtime warning if such a modification is requested.
 
     def remove_entities(
         entities: npt.ArrayLike[npt.Arraylike[Entity, int]], random_generator=None
