@@ -15,8 +15,6 @@ import numpy.typing as npt
 
 from tools.core.randomness import RandomStreams
 
-type CollisionParticipant = tuple[Literal["active", "derelict", "debris"], int, int]
-
 type Entity = tuple[Literal["active", "derelict", "debris"], int, int, int]
 
 
