@@ -37,9 +37,6 @@ class SimulationState:
     time: float = 0.0
     dt: float = 0.0  # controller sets a positive duration before each cycle
 
-    # Random generator object, initialized beforehand
-    random_streams: RandomStreams
-
     # Sampled events cannot be recovered from the population histograms alone.
     # Temporary tally: (first participant, second participant) ===> count.
     # Participants: ("active", shell, 0, 0), ("derelict", shell, 0, 0), or
@@ -77,6 +74,30 @@ class SimulationState:
     # representative area-to-mass conventions; bin edges alone are insufficient.
     debris_area_m2: np.ndarray  # [L], representative projected area
     debris_mass_kg: np.ndarray  # [L, Q], from area / representative area-to-mass
+
+    # 4. Module instance references
+    # Module instance references for the current runtime as stored here
+
+    # Random generator instance reference, initialized beforehand
+    random_streams: RandomStreams
+
+    # State random generator seed
+    seed: int = 1
+
+    # Collision module instance reference, initialized beforehand
+    collisionModule: object
+
+    # Fragmentation module instance reference, initialized beforehand
+    fragmentationModule: object
+
+    # Source-Sink module instance reference, initialized beforehand
+    sourcesinkModule: object
+
+    # Atmospheric drag module instance reference, initialized beforehand
+    atmospherModule: object
+
+    # Recorder module instance reference, initialized beforehand
+    recorderModule: object
 
     # METHODS (1): Core Utility Methods
     # Below are the instance methods indicated to core utilities within the instance.

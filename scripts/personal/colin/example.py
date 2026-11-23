@@ -11,7 +11,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 from tools.tools_example import calculate_mean
-from tools.source_sink.jaetest import yourface
+from tools.sourcesink.jaetest import yourface
 
 def main():
     # Locate Colin's folders relative to this file, regardless of where you run it.
