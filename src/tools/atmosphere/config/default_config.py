@@ -1,4 +1,8 @@
-"""general config"""
+"""Required: module_path, a .py implementation path exposing AtmosphereModule.
+The class must accept this config object and provide step(state).
+Other required settings depend on the implementation. Relative paths resolve
+from the working directory; run from the repository root.
+"""
 
 module_path = "src/tools/atmosphere/atmosphere.py"
 # place to put fixed parameters, input paths, even function references if you want

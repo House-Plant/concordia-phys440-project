@@ -1,4 +1,8 @@
-"""Source-sink configuration template"""
+"""Required: module_path, a .py implementation path exposing SourceSinkModule.
+The class must accept this config object and provide step(state).
+Other required settings depend on the implementation. Relative paths resolve
+from the working directory; run from the repository root.
+"""
 
 module_path = "src/tools/sourcesink/sourcesink.py"
 

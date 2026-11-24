@@ -1,3 +1,9 @@
+"""Required overrides: module_path and default_module_paths (rcp, ccp, acp, fgp, scp).
+All normal global settings are inherited from tools.core.config.default_config.
+The shared module_path must expose CollisionModule, FragmentationModule,
+SourceSinkModule, AtmosphereModule, and RecorderModule, each accepting its config.
+"""
+
 from tools.core.config import default_config
 from tools.core.unit_test.atmosphere import AtmosphereModule
 from tools.core.unit_test.collision import CollisionModule
