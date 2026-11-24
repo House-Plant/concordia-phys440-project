@@ -18,12 +18,13 @@ earth_radius_m = 6371000.0
 shell_midpoints_m = (shell_edges_m[:-1] + shell_edges_m[1:]) / 2
 shell_volumes_m3 = 4 * np.pi / 3 * np.diff((earth_radius_m + shell_edges_m) ** 3)
 relative_speed_m_s = np.full(len(shell_edges_m) - 1, 10000.0)
-atmospheric_density_kg_m3 = np.exp(
-    np.interp(
-        shell_midpoints_m,
-        [200e3, 400e3, 600e3, 800e3, 1000e3, 2000e3],
-        np.log([2e-10, 4e-12, 1e-13, 1e-14, 3e-15, 1e-16]),
-    )
+atmospheric_reference_altitude_m = 200e3
+atmospheric_reference_density_kg_m3 = 2.789e-10
+atmospheric_density_power = 7.235
+atmospheric_density_kg_m3 = (
+    atmospheric_reference_density_kg_m3
+    * (atmospheric_reference_altitude_m / shell_midpoints_m)
+    ** atmospheric_density_power
 )
 
 satellite_properties = {}
