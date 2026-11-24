@@ -6,11 +6,11 @@ repository. Installing standard applications and editor extensions is the except
 
 Choose one route; VS Code is not required:
 
-| Your editor | Follow these steps |
-| --- | --- |
-| VS Code | Sections 1–6 below |
+| Your editor  | Follow these steps                                                                      |
+| ------------ | --------------------------------------------------------------------------------------- |
+| VS Code      | Sections 1–6 below                                                                     |
 | Spyder 6.1.x | Install Git and uv from section 1, then [Spyder/PyCharm setup](#7-use-spyder-or-pycharm) |
-| PyCharm | Install Git and uv from section 1, then [Spyder/PyCharm setup](#7-use-spyder-or-pycharm) |
+| PyCharm      | Install Git and uv from section 1, then [Spyder/PyCharm setup](#7-use-spyder-or-pycharm) |
 
 All routes use the same Python 3.12 `.venv`, shared packages, commit hooks, and
 GitHub review process. `.vscode` settings and **Project:** tasks apply only in
@@ -21,11 +21,11 @@ fast-forward when possible. Existing contributors can rerun setup or use the
 
 ## 1. Install the applications for your system
 
-| System | Git | VS Code | uv |
-| --- | --- | --- | --- |
+| System  | Git                                                 | VS Code                                                          | uv                                                                                                                           |
+| ------- | --------------------------------------------------- | ---------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
 | Windows | [Git for Windows](https://git-scm.com/downloads/win) | [Windows setup](https://code.visualstudio.com/docs/setup/windows) | [uv installer: Windows PowerShell instructions](https://docs.astral.sh/uv/getting-started/installation/#standalone-installer) |
-| macOS | [Git for macOS](https://git-scm.com/downloads/mac) | [macOS setup](https://code.visualstudio.com/docs/setup/mac) | [uv installer: macOS instructions](https://docs.astral.sh/uv/getting-started/installation/#standalone-installer) |
-| Linux | [Git for Linux](https://git-scm.com/downloads/linux) | [Linux setup](https://code.visualstudio.com/docs/setup/linux) | [uv installer: Linux instructions](https://docs.astral.sh/uv/getting-started/installation/#standalone-installer) |
+| macOS   | [Git for a](https://git-scm.com/downloads/mac)       | [macOS setup](https://code.visualstudio.com/docs/setup/mac)       | [uv installer: macOS instructions](https://docs.astral.sh/uv/getting-started/installation/#standalone-installer)              |
+| Linux   | [Git for Linux](https://git-scm.com/downloads/linux) | [Linux setup](https://code.visualstudio.com/docs/setup/linux)     | [uv installer: Linux instructions](https://docs.astral.sh/uv/getting-started/installation/#standalone-installer)              |
 
 The VS Code download column is optional for the Spyder/PyCharm routes.
 Follow your system's installation instructions. Use uv 0.11.19 or newer. Close
@@ -72,7 +72,7 @@ editor steps above once; no formatter commands are needed during normal editing.
 2. Wait for this exact message:
 
    > Setup complete: .venv ready; commit and branch/pull hooks installed.
-
+   >
 3. Open a Python file. VS Code should discover this folder's `.venv` after setup.
    Confirm it with the Command Palette → **Python: Select Interpreter**. If needed,
    choose the discovered `.venv` environment, or use **Enter interpreter path**:
@@ -157,16 +157,16 @@ its import name, such as `tools.simulation`, after creating that module.
 
 ## If setup does not work
 
-| Message or symptom | What to do |
-| --- | --- |
-| `uv not found`, or task cannot launch `uv` | Install uv using the link above; fully quit and reopen VS Code. Rerun setup. |
-| Ruff/Python commands missing | Complete section 3; confirm Ruff is enabled for this workspace. Restart extensions if prompted. |
-| Saving leaves `x=1` unchanged | This is expected under `scripts/personal/`. Elsewhere, open a saved `.py` file in this trusted repository, enable Ruff for this workspace, and Save explicitly. Ask the maintainer if it still does not format. |
-| Imports fail in the editor/notebook | Select this repo's `.venv` interpreter/kernel; restart the kernel. |
-| Run reports `permission denied` for `.venv`, or its command starts with the `.venv` folder | Pull the latest repo settings, then use **Developer: Reload Window**. If necessary, select the Python executable from step 4.3; the environment folder itself cannot be run. |
-| Download or sync fails | Reconnect, then run **Project: Sync Python environment**. Share persistent lock/version errors with the maintainer. |
-| Hook installation fails or `core.hooksPath` is configured | Share the full message with the maintainer. Setup leaves existing hook configuration alone. |
-| Commit cannot find `uv` after setup | Restart VS Code so its Git process inherits the updated application path. |
+| Message or symptom                                                                               | What to do                                                                                                                                                                                                          |
+| ------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `uv not found`, or task cannot launch `uv`                                                   | Install uv using the link above; fully quit and reopen VS Code. Rerun setup.                                                                                                                                        |
+| Ruff/Python commands missing                                                                     | Complete section 3; confirm Ruff is enabled for this workspace. Restart extensions if prompted.                                                                                                                     |
+| Saving leaves `x=1` unchanged                                                                  | This is expected under `scripts/personal/`. Elsewhere, open a saved `.py` file in this trusted repository, enable Ruff for this workspace, and Save explicitly. Ask the maintainer if it still does not format. |
+| Imports fail in the editor/notebook                                                              | Select this repo's `.venv` interpreter/kernel; restart the kernel.                                                                                                                                                |
+| Run reports `permission denied` for `.venv`, or its command starts with the `.venv` folder | Pull the latest repo settings, then use **Developer: Reload Window**. If necessary, select the Python executable from step 4.3; the environment folder itself cannot be run.                                  |
+| Download or sync fails                                                                           | Reconnect, then run **Project: Sync Python environment**. Share persistent lock/version errors with the maintainer.                                                                                           |
+| Hook installation fails or `core.hooksPath` is configured                                      | Share the full message with the maintainer. Setup leaves existing hook configuration alone.                                                                                                                         |
+| Commit cannot find `uv` after setup                                                            | Restart VS Code so its Git process inherits the updated application path.                                                                                                                                           |
 
 Keep the error text and ask the maintainer. Do not try global `pip install` or
 force-pushing as a repair. You may safely repeat **Project: First-time setup**.
@@ -221,7 +221,7 @@ cd concordia-phys440-project
 
 For every route, the repo root is the folder containing `pyproject.toml`, `uv.lock`,
 and `maintenance/`. Do not choose its parent or use **New Repository / git init**
-inside the clone. [Spyder's Git integration](https://docs.spyder-ide.org/current/panes/projects.html#working-with-version-control),
+inside the clone. [Spyder&#39;s Git integration](https://docs.spyder-ide.org/current/panes/projects.html#working-with-version-control),
 [Desktop cloning](https://docs.github.com/en/desktop/adding-and-cloning-repositories/cloning-and-forking-repositories-from-github-desktop).
 
 ### Run the shared setup (both editors)
@@ -268,7 +268,7 @@ automatically select that project's `.venv`. If you change the default for
 another project, select this clone's interpreter again when returning and restart
 the kernel. A Git branch switch within this clone keeps the same `.venv` path;
 wait for sync and restart the kernel to load its updated packages.
-[Spyder's project-interpreter tracking issue](https://github.com/spyder-ide/spyder/issues/11362).
+[Spyder&#39;s project-interpreter tracking issue](https://github.com/spyder-ide/spyder/issues/11362).
 
 1. Choose **Projects → New Project → Existing directory** and select the repo
    root. This creates local Spyder project settings; it does not create another
@@ -277,10 +277,10 @@ wait for sync and restart the kernel to load its updated packages.
    or the application menu on macOS). Select **Use the following Python
    interpreter** and browse to the path printed by setup:
 
-   | System | Executable inside this clone |
-   | --- | --- |
-   | Windows | `.venv\Scripts\python.exe` |
-   | macOS/Linux | `.venv/bin/python` |
+   | System      | Executable inside this clone |
+   | ----------- | ---------------------------- |
+   | Windows     | `.venv\Scripts\python.exe` |
+   | macOS/Linux | `.venv/bin/python`         |
 
    Apply the change, then choose **Consoles → Restart kernel** or open a new
    IPython console. The standalone installer's own Python and Anaconda `base`
