@@ -79,10 +79,12 @@ getter and sampling-helper interfaces are not yet implemented.
 ```python
 class ModelModule:
     def __init__(self, module_config_path, global_config):
-        ...  # Load own config; prepare private parameters, methods, and caches.
+        # Load own config; prepare private parameters, methods, and caches.
+        ...
 
     def step(self, state) -> None:
-        ...  # Read the supplied state and apply this model's changes in place.
+        # Read the supplied state and apply this model's changes in place.
+        ...
 ```
 
 - Construction initializes the model, without receiving or modifying state.
@@ -136,3 +138,29 @@ statistics, and output files. Any additional transient measurements it needs are
 captured where produced, without automatically becoming permanent state fields.
 
 This document defines the intended contract.
+
+## Implementation templates
+
+Each module has a class scaffold and a Python configuration template:
+
+| Module | Class file | Config file |
+| --- | --- | --- |
+| Source-sink | `src/tools/sourcesink/sourcesink.py` (`SourceSinkModule`) | `src/tools/sourcesink/config/default_config.py` |
+| Collision | `src/tools/collision/collision.py` (`CollisionModule`) | `src/tools/collision/config/default_config.py` |
+| Fragmentation | `src/tools/fragmentation/fragmentation.py` (`FragmentationModule`) | `src/tools/fragmentation/config/default_config.py` |
+| Atmosphere | `src/tools/atmosphere/atmosphere.py` (`AtmosphereModule`) | `src/tools/atmosphere/config/default_config.py` |
+| Recorder | `src/tools/recorder/recorder.py` (`RecorderModule`) | `src/tools/recorder/config/default_config.py` |
+
+The classes are also importable from their packages, for example
+`from tools.collision import CollisionModule`. Pass the path to a trusted Python
+configuration file and the shared global configuration to the constructor.
+Construction executes that file and reads its `config` dictionary, containing
+`model`, `parameters`, and `input_paths`. These are starter conventions owned by
+each module; designers can extend them as their models take shape. The templates
+provide no calibrated physics defaults. Replace their TODOs, validate the chosen
+settings against global definitions, and define input-path resolution in the module.
+
+Every scaffold's `step(state)` raises `NotImplementedError` until implemented.
+The comments describe its population ownership, random stream, and handoff rules.
+These scaffolds follow the contract above; the controller and initializer still
+need to be completed to construct them and call them in the specified order.
