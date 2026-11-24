@@ -1,10 +1,10 @@
 from pathlib import Path
 
-from tools.core.dummy_classes.atmosphere import AtmosphereModule
-from tools.core.dummy_classes.collision import CollisionModule
-from tools.core.dummy_classes.fragmentation import FragmentationModule
-from tools.core.dummy_classes.recorder import RecorderModule
-from tools.core.dummy_classes.sourcesink import SourceSinkModule
+from tools.core.unit_test.atmosphere import AtmosphereModule
+from tools.core.unit_test.collision import CollisionModule
+from tools.core.unit_test.fragmentation import FragmentationModule
+from tools.core.unit_test.recorder import RecorderModule
+from tools.core.unit_test.sourcesink import SourceSinkModule
 
 initializer_path = str(Path(__file__).with_name("dummy_initializer.py"))
 default_seed = 42
