@@ -1,7 +1,15 @@
 import numpy as np
 
-initial_state_path = "/Users/primary/d/concordia-phys440-project/concordia-phys440-project/data/raw/satcat.csv"
-initial_state_interpreter_path = "/Users/primary/d/concordia-phys440-project/concordia-phys440-project/data/interpreters/satcat_interpreter.py"
+default_module_paths = {
+    "rcp": "src/tools/recorder/config/default_config.py",
+    "ccp": "src/tools/collision/config/default_config.py",
+    "acp": "src/tools/atmosphere/config/default_config.py",
+    "fgp": "src/tools/fragmentation/config/default_config.py",
+    "scp": "src/tools/sourcesink/config/default_config.py",
+}
+
+initial_state_path = "data/raw/satcat.csv"
+initial_state_interpreter_path = "data/interpreters/satcat_interpreter.py"
 reference_date = "2026-11-24"
 
 shell_edges_m = np.arange(200e3, 2000e3 + 50e3, 50e3)

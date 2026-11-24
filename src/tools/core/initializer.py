@@ -22,6 +22,12 @@ def build_state(config, seed, modules):
         area_to_mass_edges_m2_per_kg=area_to_mass_edges_m2_per_kg,
         reference_date=reference_date,
     )
+    collision_module = controller._load_module(modules["ccp"].module_path)
+    fragmentation_module = controller._load_module(modules["fgp"].module_path)
+    sourcesink_module = controller._load_module(modules["scp"].module_path)
+    atmosphere_module = controller._load_module(modules["acp"].module_path)
+    recorder_module = controller._load_module(modules["rcp"].module_path)
+
     attributes = {}
     attributes["active_counts"] = initial_state["active_counts"]
     attributes["derelict_counts"] = initial_state["derelict_counts"]
@@ -42,12 +48,12 @@ def build_state(config, seed, modules):
     attributes["debris_mass_kg"] = config.debris_mass_kg
     attributes["random_streams"] = RandomStreams(seed)
     attributes["seed"] = seed
-    attributes["collisionModule"] = modules["ccp"].CollisionModule(modules["ccp"])
-    attributes["fragmentationModule"] = modules["fgp"].FragmentationModule(
+    attributes["collisionModule"] = collision_module.CollisionModule(modules["ccp"])
+    attributes["fragmentationModule"] = fragmentation_module.FragmentationModule(
         modules["fgp"]
     )
-    attributes["sourcesinkModule"] = modules["scp"].SourceSinkModule(modules["scp"])
-    attributes["atmospherModule"] = modules["acp"].AtmosphereModule(modules["acp"])
-    attributes["recorderModule"] = modules["rcp"].RecorderModule(modules["rcp"])
+    attributes["sourcesinkModule"] = sourcesink_module.SourceSinkModule(modules["scp"])
+    attributes["atmospherModule"] = atmosphere_module.AtmosphereModule(modules["acp"])
+    attributes["recorderModule"] = recorder_module.RecorderModule(modules["rcp"])
 
     return state.SimulationState(**attributes)

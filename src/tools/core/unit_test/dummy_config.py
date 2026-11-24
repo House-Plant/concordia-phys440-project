@@ -5,6 +5,7 @@ from tools.core.unit_test.fragmentation import FragmentationModule
 from tools.core.unit_test.recorder import RecorderModule
 from tools.core.unit_test.sourcesink import SourceSinkModule
 
+module_path = __file__
 default_module_paths = dict.fromkeys(("rcp", "ccp", "acp", "fgp", "scp"), __file__)
 
 
