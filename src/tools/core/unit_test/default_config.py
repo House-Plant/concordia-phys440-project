@@ -1,4 +1,9 @@
-"""Collision configuration template"""
+"""Required for controller use: module_path pointing to a .py implementation
+exposing CollisionModule, which accepts this config and provides step(state).
+This legacy template still needs module_path added before controller use.
+The config dictionary below is optional model data. Relative paths resolve
+from the working directory; run from the repository root.
+"""
 
 config = {
     "model": "template",
