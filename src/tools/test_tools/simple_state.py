@@ -57,6 +57,11 @@ def create_test_state(seed=42, dt=10.0):
         shell_volumes_m3=shell_volumes_m3,
         debris_area_m2=np.array([0.00001, 0.001]),
         debris_mass_kg=np.array([[0.0002, 0.00002], [0.02, 0.002]]),
+        collisionModule=None,
+        fragmentationModule=None,
+        sourcesinkModule=None,
+        atmospherModule=None,
+        recorderModule=None,
     )
 
     global_config = {

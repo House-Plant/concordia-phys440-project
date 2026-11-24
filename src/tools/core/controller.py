@@ -27,23 +27,15 @@ class controller:
             "scp": overload_sourcesink_config_path,
         }
 
-        try:
-            state = self._build_state(
-                config_file_path, seed=seed, overload_module_paths=overload_module_paths
-            )
-            pass
-        except Exception as e:
-            print(
-                f"Initializer failed to build state with it's config. Check for config/initializer mismatch. Error is {e}"
-            )
-            self.state = None
-        else:
-            self.state = state
+        state = self._build_state(
+            config_file_path, seed=seed, overload_module_paths=overload_module_paths
+        )
+        self.state = state
 
         # Store persistent module instance references for later step calling
         self.recorder = state.recorderModule
         self.collision = state.collisionModule
-        self.atmosphere = state.atmosphereModule
+        self.atmosphere = state.atmospherModule
         self.fragmentation = state.fragmentationModule
         self.sourcesink = state.sourcesinkModule
 
@@ -53,14 +45,13 @@ class controller:
         return self.recorder
 
     def step(self):
-        # pull dt (set each step in the run loop) out from state
         dt = self.state.dt
-        # run the physics timestep for each module, providing dt
-        self.recorder.step(dt)
-        self.sourcesink.step(dt)
-        self.collision.step(dt)
-        self.fragmentation.step(dt)
-        self.atmosphere.step(dt)
+        self.sourcesink.step(self.state)
+        self.collision.step(self.state)
+        self.fragmentation.step(self.state)
+        self.atmosphere.step(self.state)
+        self.state.time += dt
+        self.recorder.step(self.state)
         return
 
     def _build_state(
@@ -76,7 +67,7 @@ class controller:
             config = self._load_module(config_file_path)
 
         modules = overload_module_paths.copy()
-        for key in overload_module_paths.keys:
+        for key in overload_module_paths:
             if overload_module_paths[key] is None:
                 modules[key] = self._load_module(config.default_module_paths[key])
             else:
@@ -103,6 +94,7 @@ class controller:
 
         return initializer.build_state(config, seed, modules)
 
+    @staticmethod
     def _load_module(module_file_path: str | None = None):
         import importlib.util
         from pathlib import Path
