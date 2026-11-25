@@ -1,18 +1,17 @@
-"""Required overrides: module_path and default_module_paths (rcp, ccp, acp, fgp, scp).
-All normal global settings are inherited from tools.core.config.default_config.
-The shared module_path must expose CollisionModule, FragmentationModule,
-SourceSinkModule, AtmosphereModule, and RecorderModule, each accepting its config.
-"""
+"""Dummy config"""
+
+# you need to specify the module you want to use here in the config, this is how the algorithm knows how to use it.
+# default_module_paths = {"ccp": "src/tools/module/config/module_config.py"}
 
 from tools.core.config import default_config
-from tools.core.unit_test.atmosphere import AtmosphereModule
-from tools.core.unit_test.collision import CollisionModule
-from tools.core.unit_test.fragmentation import FragmentationModule
-from tools.core.unit_test.recorder import RecorderModule
-from tools.core.unit_test.sourcesink import SourceSinkModule
 
-module_path = __file__
-default_module_paths = dict.fromkeys(("rcp", "ccp", "acp", "fgp", "scp"), __file__)
+default_module_paths = {
+    "rcp": "src/tools/core/unit_test/recorder_config.py",
+    "ccp": "src/tools/core/unit_test/default_config.py",
+    "acp": "src/tools/core/unit_test/atmosphere_config.py",
+    "fgp": "src/tools/core/unit_test/fragmentation_config.py",
+    "scp": "src/tools/core/unit_test/sourcesink_config.py",
+}
 
 
 def __getattr__(name):

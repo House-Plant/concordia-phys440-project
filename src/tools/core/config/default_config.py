@@ -1,14 +1,7 @@
-"""Required by the normal initializer:
-initial_state_path, initial_state_interpreter_path, reference_date,
-shell_edges_m, age_edges, length_edges_m, area_to_mass_edges_m2_per_kg,
-dt, time_bin_count, time_bin_width, relative_speed_m_s, satellite_properties,
-atmospheric_density_kg_m3, shell_volumes_m3, debris_area_m2, debris_mass_kg.
-default_module_paths maps rcp, ccp, acp, fgp, scp to module-config files;
-each entry is required unless that component is overridden in the controller.
-dt must be positive; time_bin_width must match the uniform age_edges spacing.
-Optional: default_seed (fallback 1000), initializer_path (normal initializer).
-Relative paths resolve from the working directory; run from the repository root.
-"""
+"""Core default config"""
+
+# you need to specify the module you want to use here in the config, this is how the algorithm knows how to use it.
+# default_module_paths = {"ccp": "src/tools/module/config/module_config.py"}
 
 import numpy as np
 
@@ -21,7 +14,8 @@ default_module_paths = {
 }
 
 initial_state_path = "data/raw/satcat.csv"
-initial_state_interpreter_path = "data/interpreters/satcat_interpreter.py"
+initial_state_interpreter_module = "tools.data_import.satcat_interpreter"
+initializer_module = "tools.core.initializer"
 reference_date = "2026-11-24"
 
 shell_edges_m = np.arange(200e3, 2000e3 + 50e3, 50e3)

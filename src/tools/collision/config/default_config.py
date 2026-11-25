@@ -1,13 +1,13 @@
-"""Required: module_path, a .py implementation path exposing CollisionModule.
-The class must accept this config object and provide step(state).
-Other required settings depend on the implementation. Relative paths resolve
-from the working directory; run from the repository root.
-"""
+"""Collision default config"""
 
-module_path = "src/tools/collision/collision.py"
+# you need to specify the module you want to use here in the config, this is how the algorithm knows how to use it.
+# module_name = "tools.module.module"
 
-# place to put fixed parameters, input paths, even function references if you want
-# example below
-# initial_data_path = "data/raw/satcat.csv"
-# atmospheric_drag_ratio = 0.5
-# fragmentation_model_subpath = "blah blah blah etcetera"
+module_name = "tools.collision.collision"
+
+active_active = True
+active_derelict = True
+active_debris = True
+derelict_derelict = True
+derelict_debris = True
+debris_debris = True

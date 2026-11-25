@@ -1,19 +1,21 @@
+from importlib import import_module
+
 import tools.core.state as state
-from tools.core.controller import controller
+from tools.core.controller import PROJECT_ROOT
 from tools.core.randomness import RandomStreams
 
 
-def build_state(config, seed, modules):
+def build_state(config, seed, module_configs):
     # Config parameters
-    initial_state_interpreter_path = config.initial_state_interpreter_path
-    initial_state_path = config.initial_state_path
+    initial_state_interpreter_module = config.initial_state_interpreter_module
+    initial_state_path = PROJECT_ROOT / config.initial_state_path
     reference_date = config.reference_date
     shell_edges_m = config.shell_edges_m
     age_edges = config.age_edges
     length_edges_m = config.length_edges_m
     area_to_mass_edges_m2_per_kg = config.area_to_mass_edges_m2_per_kg
 
-    initial_state_interpreter = controller._load_module(initial_state_interpreter_path)
+    initial_state_interpreter = import_module(initial_state_interpreter_module)
     initial_state = initial_state_interpreter.read_satcat(
         initial_state_path,
         shell_edges_m=shell_edges_m,
@@ -22,11 +24,11 @@ def build_state(config, seed, modules):
         area_to_mass_edges_m2_per_kg=area_to_mass_edges_m2_per_kg,
         reference_date=reference_date,
     )
-    collision_module = controller._load_module(modules["ccp"].module_path)
-    fragmentation_module = controller._load_module(modules["fgp"].module_path)
-    sourcesink_module = controller._load_module(modules["scp"].module_path)
-    atmosphere_module = controller._load_module(modules["acp"].module_path)
-    recorder_module = controller._load_module(modules["rcp"].module_path)
+    collision_module = import_module(module_configs["ccp"].module_name)
+    fragmentation_module = import_module(module_configs["fgp"].module_name)
+    sourcesink_module = import_module(module_configs["scp"].module_name)
+    atmosphere_module = import_module(module_configs["acp"].module_name)
+    recorder_module = import_module(module_configs["rcp"].module_name)
 
     attributes = {}
     attributes["active_counts"] = initial_state["active_counts"]
@@ -48,12 +50,18 @@ def build_state(config, seed, modules):
     attributes["debris_mass_kg"] = config.debris_mass_kg
     attributes["random_streams"] = RandomStreams(seed)
     attributes["seed"] = seed
-    attributes["collisionModule"] = collision_module.CollisionModule(modules["ccp"])
-    attributes["fragmentationModule"] = fragmentation_module.FragmentationModule(
-        modules["fgp"]
+    attributes["collisionModule"] = collision_module.CollisionModule(
+        module_configs["ccp"]
     )
-    attributes["sourcesinkModule"] = sourcesink_module.SourceSinkModule(modules["scp"])
-    attributes["atmospherModule"] = atmosphere_module.AtmosphereModule(modules["acp"])
-    attributes["recorderModule"] = recorder_module.RecorderModule(modules["rcp"])
+    attributes["fragmentationModule"] = fragmentation_module.FragmentationModule(
+        module_configs["fgp"]
+    )
+    attributes["sourcesinkModule"] = sourcesink_module.SourceSinkModule(
+        module_configs["scp"]
+    )
+    attributes["atmospherModule"] = atmosphere_module.AtmosphereModule(
+        module_configs["acp"]
+    )
+    attributes["recorderModule"] = recorder_module.RecorderModule(module_configs["rcp"])
 
     return state.SimulationState(**attributes)

@@ -1,12 +1,6 @@
-"""Required: module_path, a .py implementation path exposing AtmosphereModule.
-The class must accept this config object and provide step(state).
-Other required settings depend on the implementation. Relative paths resolve
-from the working directory; run from the repository root.
-"""
+"""Atmosphere default config"""
 
-module_path = "src/tools/atmosphere/atmosphere.py"
-# place to put fixed parameters, input paths, even function references if you want
-# example below
-# initial_data_path = "data/raw/satcat.csv"
-# atmospheric_drag_ratio = 0.5
-# fragmentation_model_subpath = "blah blah blah etcetera"
+# you need to specify the module you want to use here in the config, this is how the algorithm knows how to use it.
+# module_name = "tools.module.module"
+
+module_name = "tools.atmosphere.atmosphere"

@@ -1,3 +1,9 @@
+from importlib import import_module
+from pathlib import Path
+
+PROJECT_ROOT = Path(__file__).resolve().parents[3]
+
+
 class controller:
     """
     Controller class responsible for executing the main simulation loop
@@ -42,7 +48,7 @@ class controller:
     def run(self, duration_seconds):
         while self.state.time < duration_seconds:
             self.step()
-        return self.recorder
+        return self.state
 
     def step(self):
         dt = self.state.dt
@@ -52,7 +58,7 @@ class controller:
         self.atmosphere.step(self.state)
         self.state.time += dt
         self.recorder.step(self.state)
-        return
+        return self.state
 
     def _build_state(
         self,
@@ -66,18 +72,18 @@ class controller:
         else:
             config = self._load_module(config_file_path)
 
-        modules = overload_module_paths.copy()
+        module_configs = overload_module_paths.copy()
         for key in overload_module_paths:
             if overload_module_paths[key] is None:
-                modules[key] = self._load_module(config.default_module_paths[key])
+                module_configs[key] = self._load_module(
+                    config.default_module_paths[key]
+                )
             else:
-                modules[key] = self._load_module(overload_module_paths[key])
+                module_configs[key] = self._load_module(overload_module_paths[key])
 
-        initializer_path = getattr(config, "initializer_path", None)
-        if initializer_path is None:
-            import tools.core.initializer as initializer
-        else:
-            initializer = self._load_module(initializer_path)
+        initializer = import_module(
+            getattr(config, "initializer_module", "tools.core.initializer")
+        )
 
         self.config = config
         self.initializer = initializer
@@ -92,14 +98,13 @@ class controller:
                     "No config default seed, and no seed provided. Running default seed of 1000. Did you mean to input a seed?"
                 )
 
-        return initializer.build_state(config, seed, modules)
+        return initializer.build_state(config, seed, module_configs)
 
     @staticmethod
     def _load_module(module_file_path: str | None = None):
         import importlib.util
-        from pathlib import Path
 
-        path = Path(module_file_path).resolve()
+        path = (PROJECT_ROOT / module_file_path).resolve()
         name = path.stem
         if not path.is_file():
             raise FileNotFoundError(f"File not found at: {path}")

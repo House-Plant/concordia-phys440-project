@@ -20,12 +20,7 @@ class CollisionModule:
     def __init__(self, module_config):
         """Initialize the collision model using its configuration."""
 
-        if isinstance(module_config, dict):
-            self.config = module_config.config
-        else:
-            self.config = module_config.config
-
-        self.parameters = self.config["parameters"]
+        self.config = module_config
 
     # ------------------------------------------------------------
     # 2. COLLISION CROSS-SECTION
@@ -169,7 +164,7 @@ class CollisionModule:
 
         category = "_".join(types)
 
-        return self.parameters[category]
+        return getattr(self.config, category)
 
     # ------------------------------------------------------------
     # 8. CONSTRUCT POSSIBLE COLLISION CHANNELS
